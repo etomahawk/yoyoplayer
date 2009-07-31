@@ -643,39 +643,8 @@ public final class Util {
         List<SearchResult> list = new ArrayList<SearchResult>();
         try {
             list = LRCUtil.search(artist, title);
-            if (!list.isEmpty()) {
-                return list;
-            }
         } catch (Exception ex) {
             Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            HttpClient http = new HttpClient();
-            Config config = Config.getConfig();
-            if (config.isUseProxy()) {
-                if (config.getProxyUserName() != null && config.getProxyPwd() != null) {
-                    http.getState().setProxyCredentials(
-                            new AuthScope(config.getProxyHost(), Integer.parseInt(config.getProxyPort())),
-                            new UsernamePasswordCredentials(config.getProxyUserName(), config.getProxyPwd()));
-                }
-                http.getHostConfiguration().setProxy(config.getProxyHost(),
-                        Integer.parseInt(config.getProxyPort()));
-            }
-            http.getParams().setContentCharset("GBK");
-            GetMethod get = new GetMethod("http://www.baidu.com/s?wd=" + URLEncoder.encode("filetype:lrc " + title + "-" + artist, "GBK"));
-            get.addRequestHeader("Host", "www.baidu.com");
-            get.addRequestHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11");
-            get.addRequestHeader("Accept", "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
-            get.addRequestHeader("Accept-Language", "zh-cn,zh;q=0.5");
-            get.addRequestHeader("Keep-Alive", "300");
-            get.addRequestHeader("Referer", "http://www.baidu.com/");
-            get.addRequestHeader("Connection", "keep-alive");
-            int i = http.executeMethod(get);
-            String temp = getString(get.getResponseBodyAsStream());
-            get.releaseConnection();
-//        System.out.println("TEMP="+temp);
-            list.addAll(parseSearchResult(temp));
-        } catch (IOException ex) {
         }
         return list;
     }
@@ -1224,51 +1193,6 @@ public final class Util {
         return htmlTrim2(content);
     }
 
-    /**
-     * 从网页内容里面分析出歌手和歌曲,还有下载的地址
-     * @param input 给定的网页源码
-     * @return 分析出来的列表
-     */
-    private static List<SearchResult> parseSearchResult(String input) {
-        List<SearchResult> list = new ArrayList<SearchResult>();
-        Matcher m = Pattern.compile("(?<=<b>【LRC】</b>).*?(?=HTML版</a>)").matcher(input);
-        Pattern p = Pattern.compile("(?<=LRC/Lyric - <a href=\").*?(?=\" target=\"_blank\">)");
-        while (m.find()) {
-            String str = m.group();
-            String trimed = htmlTrim(str);
-            int index = trimed.indexOf("-");
-            String title = "", artist = "", url = null;
-            if (index != -1) {
-                title = trimed.substring(0, index);
-                artist = trimed.substring(index + 1, trimed.indexOf("文件格式"));
-            }
-            Matcher m1 = p.matcher(str);
-            if (m1.find()) {
-                url = m1.group();
-            }
-            if (url != null) {
-                final String tUrl = url;
-                SearchResult sr = new SearchResult(artist, title, new SearchResult.Task() {
-
-                    public String getLyricContent() {
-                        String content = "";
-                        try {
-                            content = Util.getURLContent(tUrl);
-                        } catch (IOException ex) {
-                            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        Matcher m = Pattern.compile("(?<=<body>).*?(?=</body>)").matcher(content);
-                        if (m.find()) {
-                            content = m.group();
-                        }
-                        return htmlTrim2(content);
-                    }
-                });
-                list.add(sr);
-            }
-        }
-        return list;
-    }
 
     /**
      * 去除HTML标记
