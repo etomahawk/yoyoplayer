@@ -1,27 +1,88 @@
 package com.hadeslee.yoyoplayer.lyric;
 
+import com.hadeslee.yoyoplayer.lyric.SearchResult.Task;
 import com.hadeslee.yoyoplayer.playlist.PlayListItem;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 public class LRCUtil {
 
-    public static final String SearchPath = "http://ttlrcct2.qianqian.com/dll/lyricsvr.dll?sh?Artist={0}&Title={1}&Flags=0";
-    public static final String DownloadPath = "http://ttlrcct2.qianqian.com/dll/lyricsvr.dll?dl?Id={0}&Code={1}";
+    public static final String getSingleResultURL = "http://lrcfinder.appspot.com/YOYO?cmd=getSingleResult&artist={0}&title={1}";
+    public static final String getLyricContentURL = "http://lrcfinder.appspot.com/YOYO?cmd=getLyricContent&id={0}&lrcId={1}&lrcCode={2}&artist={3}&title={4}";
+    public static final String getResultListURL = "http://lrcfinder.appspot.com/YOYO?cmd=getResultList&artist={0}&title={1}";
+
+    private static String $(String s) throws UnsupportedEncodingException {
+        return URLEncoder.encode(s, "UTF-8");
+    }
+
+    private static List<SearchResult> getSearchResult(String artistParam, String titleParam) throws Exception {
+        String urlContent = MessageFormat.format(getResultListURL, $(artistParam), $(titleParam));
+        ObjectInputStream ois = getObjectInputStream(urlContent);
+        int back = ois.readInt();
+        List<SearchResult> list = new ArrayList<SearchResult>();
+        if (back == 1) {
+            int size = ois.readInt();
+            for (int i = 0; i < size; i++) {
+                final String artist = ois.readUTF();
+                final String lrcCode = ois.readUTF();
+                final String lrcId = ois.readUTF();
+                final String title = ois.readUTF();
+                final String id = ois.readUTF();
+                final Task task = new Task() {
+
+                    public String getLyricContent() {
+                        return getLyricContent_S(id, lrcId, lrcCode, artist, title);
+                    }
+                };
+                list.add(new SearchResult(id, lrcId, lrcCode, artist, title, task));
+            }
+        }
+        return list;
+    }
+
+    private static String getSingleResult(String artistParam, String titleParam) throws Exception {
+        String urlContent = MessageFormat.format(getSingleResultURL, $(artistParam), $(titleParam));
+        ObjectInputStream ois = getObjectInputStream(urlContent);
+        int back = ois.readInt();
+        if (back == 1) {
+            return ois.readUTF();
+        } else {
+            return null;
+        }
+    }
+
+    private static String getLyricContent_S(String id, String lrcId, String lrcCode, String artist, String title) {
+        try {
+            String urlContent = MessageFormat.format(getLyricContentURL, $(id), $(lrcId), $(lrcCode), $(artist), $(title));
+            ObjectInputStream ois = getObjectInputStream(urlContent);
+            int back = ois.readInt();
+            if (back == 1) {
+                return ois.readUTF();
+            } else {
+                return "";
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "";
+        }
+    }
+
+    private static ObjectInputStream getObjectInputStream(String urlContent) throws Exception {
+        URL url = new URL(urlContent);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        ObjectInputStream ois = new ObjectInputStream(conn.getInputStream());
+        return ois;
+    }
 
     /**
      * 根据传入的歌名和歌手名，得到一个搜索的列表
@@ -33,7 +94,7 @@ public class LRCUtil {
      * @return 一个搜索的列表
      */
     public static List<SearchResult> search(PlayListItem item) {
-        if(!item.isInited()){
+        if (!item.isInited()) {
             item.reRead();
         }
         List<SearchResult> list = new ArrayList<SearchResult>();
@@ -61,39 +122,13 @@ public class LRCUtil {
      * @return
      */
     public static List<SearchResult> search(String singer, String title) throws Exception {
-        singer = singer.toLowerCase().replace(" ", "").replace("'", "");
-        title = title.toLowerCase().replace(" ", "").replace("'", "");
-        String url = (MessageFormat.format(SearchPath, ToQianQianHexString(singer, "UTF-16LE"), ToQianQianHexString(title, "UTF-16LE")));
-        String back = readURL(url);
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        //support the namespace
-        factory.setNamespaceAware(true);
-        //Get the instance
-        Document doc = factory.newDocumentBuilder().parse(new InputSource(new StringReader(back)));
-        System.out.println(back);
-        NodeList nodes = doc.getElementsByTagName("lrc");
-        List<SearchResult> list = new ArrayList<SearchResult>();
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Node node = nodes.item(i);
-            final String artistTemp = node.getAttributes().getNamedItem("artist").getTextContent();
-            final String titleTemp = node.getAttributes().getNamedItem("title").getTextContent();
-            final int lrcId = Integer.parseInt(node.getAttributes().getNamedItem("id").getTextContent());
-            SearchResult.Task task = new SearchResult.Task() {
-
-                public String getLyricContent() {
-                    try {
-                        String url = MessageFormat.format(DownloadPath, "" + lrcId, CreateQianQianCode(artistTemp, titleTemp, lrcId));
-                        return readURL(url);
-                    } catch (UnsupportedEncodingException ex) {
-                        Logger.getLogger(LRCUtil.class.getName()).log(Level.SEVERE, null, ex);
-                        return null;
-                    }
-                }
-            };
-            list.add(new SearchResult(artistTemp, titleTemp, task));
+        if (singer == null) {
+            singer = "";
         }
-        return list;
+        if (title == null) {
+            title = "";
+        }
+        return getSearchResult(singer, title);
     }
 
     private static String readURL(String url) {
@@ -111,99 +146,5 @@ public class LRCUtil {
             exe.printStackTrace();
             return null;
         }
-    }
-
-    private static String ToQianQianHexString(String s, String chatset) throws UnsupportedEncodingException {
-        StringBuilder sb = new StringBuilder();
-        byte[] bytes = s.getBytes(chatset);
-        for (byte b : bytes) {
-            int j = b & 0xff;
-            if (j < 16) {
-                sb.append("0");
-            }
-            sb.append(Integer.toString(j, 16).toUpperCase());
-        }
-        return sb.toString();
-    }
-
-    private static String CreateQianQianCode(String singer, String title, int lrcId) throws UnsupportedEncodingException {
-        String qqHexStr = ToQianQianHexString(singer + title, "UTF-8");
-        int length = qqHexStr.length() / 2;
-        int[] song = new int[length];
-        for (int i = 0; i < length; i++) {
-            song[i] = Integer.parseInt(qqHexStr.substring(i * 2, i * 2 + 2), 16);
-        }
-        int t1 = 0, t2 = 0, t3 = 0;
-        t1 = (lrcId & 0x0000FF00) >> 8;
-        if ((lrcId & 0x00FF0000) == 0) {
-            t3 = 0x000000FF & ~t1;
-        } else {
-            t3 = 0x000000FF & ((lrcId & 0x00FF0000) >> 16);
-        }
-
-        t3 = t3 | ((0x000000FF & lrcId) << 8);
-        t3 = t3 << 8;
-        t3 = t3 | (0x000000FF & t1);
-        t3 = t3 << 8;
-        if ((lrcId & 0xFF000000) == 0) {
-            t3 = t3 | (0x000000FF & (~lrcId));
-        } else {
-            t3 = t3 | (0x000000FF & (lrcId >> 24));
-        }
-
-        int j = length - 1;
-        while (j >= 0) {
-            int c = song[j];
-            if (c >= 0x80) {
-                c = c - 0x100;
-            }
-
-            t1 = (int) ((c + t2) & 0x00000000FFFFFFFFL);
-            t2 = (int) ((t2 << (j % 2 + 4)) & 0x00000000FFFFFFFFL);
-            t2 = (int) ((t1 + t2) & 0x00000000FFFFFFFFL);
-            j -= 1;
-        }
-        j = 0;
-        t1 = 0;
-        while (j <= length - 1) {
-            int c = song[j];
-            if (c >= 128) {
-                c = c - 256;
-            }
-            int t4 = (int) ((c + t1) & 0x00000000FFFFFFFFL);
-            t1 = (int) ((t1 << (j % 2 + 3)) & 0x00000000FFFFFFFFL);
-            t1 = (int) ((t1 + t4) & 0x00000000FFFFFFFFL);
-            j += 1;
-        }
-
-        int t5 = (int) Conv(t2 ^ t3);
-        t5 = (int) Conv(t5 + (t1 | lrcId));
-        t5 = (int) Conv(t5 * (t1 | t3));
-        t5 = (int) Conv(t5 * (t2 ^ lrcId));
-
-        long t6 = (long) t5;
-        if (t6 > 2147483648L) {
-            t5 = (int) (t6 - 4294967296L);
-        }
-        return Integer.toString(t5);
-    }
-
-    public static long Conv(int i) {
-        long r = i % 4294967296L;
-        if (i >= 0 && r > 2147483648L) {
-            r = r - 4294967296L;
-        }
-
-        if (i < 0 && r < 2147483648L) {
-            r = r + 4294967296L;
-        }
-        return r;
-    }
-
-    public static void main(String[] args) throws Exception {
-        // "http://ttlrcct2.qianqian.com/dll/lyricsvr.dll?sh?Artist=&Title=29597F4F8476C57F8081&Flags=0"
-        List<SearchResult> list = search("", "天使的翅膀");
-        System.out.println(list.get(0).getContent());
-//        System.out.println(CreateQianQianCode("西单女孩", "天使的翅膀", 263407));
     }
 }
