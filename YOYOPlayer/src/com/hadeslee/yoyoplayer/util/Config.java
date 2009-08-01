@@ -192,7 +192,7 @@ public class Config implements Serializable {
     private boolean showTitleInTaskBar = true;//是否在任务栏显示正在播放的歌曲
     private transient boolean autoShutDown;//是否自动关机,不参与序列化
     private transient Date shutDownTime;//自动关机的时间,不参与序列化
-    private String checkUpdateStrategy = CHECK_WEEK;//检查更新频率的策略
+    private String checkUpdateStrategy = CHECK_DAY;//检查更新频率的策略,默认每天
     private boolean autoCloseDialogWhenSave;//在点击保存设置的时候,是否自动关闭对话框
     private boolean miniHide;//最小化的时候是否隐藏主界面
     /*******************************************************************/

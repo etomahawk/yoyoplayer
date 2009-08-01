@@ -2,24 +2,25 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.hadeslee.yoyoplayer.util;
 
 import java.util.logging.Logger;
+
 /**
  * 一个抽象版本的对象
  * @author hadeslee
  */
 public class Version {
+
     private static Logger log = Logger.getLogger(Version.class.getName());
     private String version;
     private String url;
     private String description;
 
-    public Version(String version, String url,String description) {
+    public Version(String version, String url, String description) {
         this.version = version;
         this.url = url;
-        this.description=description;
+        this.description = description;
     }
 
     public String getDescription() {
@@ -33,5 +34,8 @@ public class Version {
     public String getVersion() {
         return version;
     }
-    
+
+    public String toString() {
+        return "version:" + version + ",url:" + url + ",description:" + description;
+    }
 }

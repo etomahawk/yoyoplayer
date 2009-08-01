@@ -32,13 +32,10 @@ import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -115,12 +112,10 @@ public final class Util {
     }
 
     public static boolean voteOpen() {
-        System.out.println("要求VOTEOPEN...");
         return GAEUtil.vote("voteOpen");
     }
 
     public static boolean voteOneHour() {
-        System.out.println("要求VOTEHOUR");
         return GAEUtil.vote("voteHour");
     }
 
@@ -135,27 +130,7 @@ public final class Util {
      */
     public static Version getRemoteVersion() {
         try {
-            HttpClient http = new HttpClient();
-            http.getParams().setContentCharset("GBK");
-            GetMethod get = new GetMethod("http://www.blogjava.net/Files/hadeslee/version.zip");
-            get.addRequestHeader("Host", "www.blogjava.net");
-            get.addRequestHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11");
-            get.addRequestHeader("Accept", "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
-            get.addRequestHeader("Accept-Language", "zh-cn,zh;q=0.5");
-            get.addRequestHeader("Accept-Charset", "x-gbk,utf-8;q=0.7,*;q=0.7");
-            get.addRequestHeader("Connection", "keep-alive");
-            get.addRequestHeader("Referer", "http://www.blogjava.net/hadeslee");
-            int i = http.executeMethod(get);
-            ZipInputStream zip = new ZipInputStream(get.getResponseBodyAsStream());
-            ZipEntry entry = zip.getNextEntry();
-            Properties pro = new Properties();
-            pro.load(zip);
-            String version = pro.getProperty("Version");
-            String url = pro.getProperty("URL");
-            String des = pro.getProperty("Description");
-            log.log(Level.INFO, "RemoteVersion=" + version);
-            get.releaseConnection();
-            return new Version(version, url, des);
+            return GAEUtil.getRemoteVersion();
         } catch (IOException ex) {
             Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
             return null;

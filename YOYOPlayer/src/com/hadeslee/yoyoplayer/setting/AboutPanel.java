@@ -62,7 +62,7 @@ public class AboutPanel extends javax.swing.JPanel {
         jTextArea1.setEditable(false);
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
-        jTextArea1.setText("    YOYOPlayer是一个用JAVA编写的,跨平台的音乐播放软件.是一个集播放,歌词显示于一体的音频播放软件.\n    由于JAVA的跨平台性,您可以在几乎任何平台下使用此软件,这样可以免去您每个平台装一种特定播放软件的烦恼.\n    YOYOPlayer的主要定位是Linux下的用户,因为Linux下几乎没有一款集成性高的音频播放软件,并且读取中文标签经常会出现乱码,由于YOYOPlayer是国人开发的,所以对中文的支持绝对可以放心,并且可以自定义标签的读取和写入编码.\n    支持snd,aifc,aif,wav,au,mp1,mp2,mp3,ogg,spx,flac,ape,mac等音频格式音乐。支持10波段均衡器.\n    支持ID3v1/v2、APE和Vorbis标签的读取和写入，支持设置标签编码,支持以标签重命名文件。\n    支持同步歌词滚动显示和拖动定位播放，并且支持在线歌词搜索功能。\n    支持多播放列表，支持多种视觉效果.\n    真正永久免费并且开放源代码，也不存在任何功能或时间限制。在使用过程中,有任何问题,欢迎到\n    http://www.blogjava.net/hadeslee上留言.");
+        jTextArea1.setText("    YOYOPlayer是一个用JAVA编写的,跨平台的音乐播放软件.是一个集播放,歌词显示于一体的音频播放软件.\n    由于JAVA的跨平台性,您可以在几乎任何平台下使用此软件,这样可以免去您每个平台装一种特定播放软件的烦恼.\n    YOYOPlayer的主要定位是Linux下的用户,因为Linux下几乎没有一款集成性高的音频播放软件,并且读取中文标签经常会出现乱码,由于YOYOPlayer是国人开发的,所以对中文的支持绝对可以放心,并且可以自定义标签的读取和写入编码.\n    支持snd,aifc,aif,wav,au,mp1,mp2,mp3,ogg,spx,flac,ape,mac等音频格式音乐。支持10波段均衡器.\n    支持ID3v1/v2、APE和Vorbis标签的读取和写入，支持设置标签编码,支持以标签重命名文件。\n    支持同步歌词滚动显示和拖动定位播放，并且支持在线歌词搜索功能。\n    支持多播放列表，支持多种视觉效果.\n    真正永久免费并且开放源代码，也不存在任何功能或时间限制。在使用过程中,有任何问题,欢迎到\n    http://code.google.com/p/yoyoplayer上留言.");
         jScrollPane1.setViewportView(jTextArea1);
 
         author.setForeground(new java.awt.Color(0, 0, 255));
