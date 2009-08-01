@@ -1,3 +1,7 @@
+1.2更新[2009-08-02]
+1，全新的歌词搜索方式，使搜索率大大提高。
+2，把整个代码全部移到google code上去。以前的sourceforge和java.net已经不再维护了。
+=====================================================================================
 1.1.3更新[2008-07-28]
 
 1,完全去除了其它的搜索部分,因为有些网页格式经常会变动,所以一段时间以后可能又搜不到歌词了,现在搜索歌词用的是百度的filetype:lrc 歌曲名-歌手名 的方式进行搜索.
@@ -33,11 +37,12 @@
 5,配置目录现在改为{user.home}/.YOYOPlayer/,默认的歌词目录是{user.home}/.YOYOPlayer/Lyrics/
 6,快捷键:C:播放,V:停止,B:下一首,空格:暂停,F2:显示/隐藏歌词秀,F3:显示/隐藏EQ窗口,F4:显示/隐藏播放列表
 7,在一定程度上实现了窗口的吸附的功能,虽然不是很完美,还望各位有什么好的想法一起分享:)
-在首选项里在的还有很多功能没有实现,因为个人的精力实在有限,YOYOPlayer项目已经在sourceforge.net和java.net申请了项目,有想一起开发的朋友,可以和我联系.
+在首选项里在的还有很多功能没有实现,因为个人的精力实在有限,YOYOPlayer项目已经在google code上申请了项目,有想一起开发的朋友,可以和我联系.
 
-在sourceforge上的地址:http://sourceforge.net/projects/yoyoplyer
-在java.net上地地址:https://yoyoplayer.dev.java.net
-
-在使用的过程中,有任何问题,欢迎到http://www.blogjava.net/hadeslee或者http://www.luge.cn/bbs/上留言.也可以加本人的QQ:24325142.希望和大家一起探讨JAVA问题,让JAVA的浓香飘的更远.
+YOYOPlayer现在项目已经移至google code，以前的sourceforge和java.net上面的项目不再维护了。因为速度很慢。
+google code上主页的地址是：
+http://code.google.com/p/yoyoplayer
+在程序的使用过程中有任何意见和BUG反应，请到http://code.google.com/p/yoyoplayer/issues/list上新建issue。
+在使用的过程中,有任何问题,欢迎到http://www.blogjava.net/hadeslee或者上留言.也可以加本人的QQ:24325142.希望和大家一起探讨JAVA问题,让JAVA的浓香飘的更远.
 最后,谢谢我的女友YOYO这段时间以来以我的关心和鼓励.
 
