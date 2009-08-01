@@ -67,7 +67,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
  */
 public final class Util {
 
-    public static String VERSION = "1.1.3";//版本号,用于对比更新
+    public static String VERSION = "1.2";//版本号,用于对比更新
     private static Logger log = Logger.getLogger(Util.class.getName());
     private static final JPanel panel = new JPanel();
     private static final JFileChooser jfc = new JFileChooser();
@@ -115,43 +115,13 @@ public final class Util {
     }
 
     public static boolean voteOpen() {
-        try {
-            HttpClient http = new HttpClient();
-            http.getParams().setContentCharset("GBK");
-            GetMethod get = new GetMethod("http://www.blogjava.net/Files/hadeslee/voteOpen.zip");
-            get.addRequestHeader("Host", "www.blogjava.net");
-            get.addRequestHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11");
-            get.addRequestHeader("Accept", "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
-            get.addRequestHeader("Accept-Language", "zh-cn,zh;q=0.5");
-            get.addRequestHeader("Accept-Charset", "x-gbk,utf-8;q=0.7,*;q=0.7");
-            get.addRequestHeader("Connection", "keep-alive");
-            get.addRequestHeader("Referer", "http://www.blogjava.net/hadeslee");
-            int i = http.executeMethod(get);
-            get.releaseConnection();
-            return true;
-        } catch (IOException ex) {
-            return false;
-        }
+        System.out.println("要求VOTEOPEN...");
+        return GAEUtil.vote("voteOpen");
     }
 
     public static boolean voteOneHour() {
-        try {
-            HttpClient http = new HttpClient();
-            http.getParams().setContentCharset("GBK");
-            GetMethod get = new GetMethod("http://www.blogjava.net/Files/hadeslee/voteOneHour.zip");
-            get.addRequestHeader("Host", "www.blogjava.net");
-            get.addRequestHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11");
-            get.addRequestHeader("Accept", "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
-            get.addRequestHeader("Accept-Language", "zh-cn,zh;q=0.5");
-            get.addRequestHeader("Accept-Charset", "x-gbk,utf-8;q=0.7,*;q=0.7");
-            get.addRequestHeader("Connection", "keep-alive");
-            get.addRequestHeader("Referer", "http://www.blogjava.net/hadeslee");
-            int i = http.executeMethod(get);
-            get.releaseConnection();
-            return true;
-        } catch (IOException ex) {
-            return false;
-        }
+        System.out.println("要求VOTEHOUR");
+        return GAEUtil.vote("voteHour");
     }
 
     /**
@@ -1192,7 +1162,6 @@ public final class Util {
         }
         return htmlTrim2(content);
     }
-
 
     /**
      * 去除HTML标记
