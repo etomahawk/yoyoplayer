@@ -1,15 +1,11 @@
 package com.hadeslee.yoyoplayer.lyric;
 
-import com.hadeslee.yoyoplayer.lyric.SearchResult.Task;
 import com.hadeslee.yoyoplayer.playlist.PlayListItem;
+import com.hadeslee.yoyoplayer.util.GAEUtil;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,72 +13,6 @@ import java.util.logging.Logger;
 
 public class LRCUtil {
 
-    public static final String getSingleResultURL = "http://lrcfinder.appspot.com/YOYO?cmd=getSingleResult&artist={0}&title={1}";
-    public static final String getLyricContentURL = "http://lrcfinder.appspot.com/YOYO?cmd=getLyricContent&id={0}&lrcId={1}&lrcCode={2}&artist={3}&title={4}";
-    public static final String getResultListURL = "http://lrcfinder.appspot.com/YOYO?cmd=getResultList&artist={0}&title={1}";
-
-    private static String $(String s) throws UnsupportedEncodingException {
-        return URLEncoder.encode(s, "UTF-8");
-    }
-
-    private static List<SearchResult> getSearchResult(String artistParam, String titleParam) throws Exception {
-        String urlContent = MessageFormat.format(getResultListURL, $(artistParam), $(titleParam));
-        ObjectInputStream ois = getObjectInputStream(urlContent);
-        int back = ois.readInt();
-        List<SearchResult> list = new ArrayList<SearchResult>();
-        if (back == 1) {
-            int size = ois.readInt();
-            for (int i = 0; i < size; i++) {
-                final String artist = ois.readUTF();
-                final String lrcCode = ois.readUTF();
-                final String lrcId = ois.readUTF();
-                final String title = ois.readUTF();
-                final String id = ois.readUTF();
-                final Task task = new Task() {
-
-                    public String getLyricContent() {
-                        return getLyricContent_S(id, lrcId, lrcCode, artist, title);
-                    }
-                };
-                list.add(new SearchResult(id, lrcId, lrcCode, artist, title, task));
-            }
-        }
-        return list;
-    }
-
-    private static String getSingleResult(String artistParam, String titleParam) throws Exception {
-        String urlContent = MessageFormat.format(getSingleResultURL, $(artistParam), $(titleParam));
-        ObjectInputStream ois = getObjectInputStream(urlContent);
-        int back = ois.readInt();
-        if (back == 1) {
-            return ois.readUTF();
-        } else {
-            return null;
-        }
-    }
-
-    private static String getLyricContent_S(String id, String lrcId, String lrcCode, String artist, String title) {
-        try {
-            String urlContent = MessageFormat.format(getLyricContentURL, $(id), $(lrcId), $(lrcCode), $(artist), $(title));
-            ObjectInputStream ois = getObjectInputStream(urlContent);
-            int back = ois.readInt();
-            if (back == 1) {
-                return ois.readUTF();
-            } else {
-                return "";
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return "";
-        }
-    }
-
-    private static ObjectInputStream getObjectInputStream(String urlContent) throws Exception {
-        URL url = new URL(urlContent);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        ObjectInputStream ois = new ObjectInputStream(conn.getInputStream());
-        return ois;
-    }
 
     /**
      * 根据传入的歌名和歌手名，得到一个搜索的列表
@@ -128,7 +58,7 @@ public class LRCUtil {
         if (title == null) {
             title = "";
         }
-        return getSearchResult(singer, title);
+        return GAEUtil.getSearchResult(singer, title);
     }
 
     private static String readURL(String url) {
