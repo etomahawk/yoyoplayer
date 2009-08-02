@@ -77,8 +77,9 @@ public final class Util {
      * 很多地方都可以调用到此方法,并且此方法
      * 负责弹出对话框让用户选择或者其它一些实现
      * @param ver 得到的版本对象
+     * @param ignoreNoUpdate 是否忽略没有更新的提示框
      */
-    public static void checkUpdate(Version remote) {
+    public static void checkUpdate(Version remote, boolean ignoreNoUpdate) {
         if (remote != null && remote.getVersion() != null) {
             if (Util.canUpdate(remote.getVersion())) {
                 int i = JOptionPane.showConfirmDialog(null, Config.getResource("Util.currentVersion") + Util.VERSION + "\n" +
@@ -91,7 +92,7 @@ public final class Util {
                         Logger.getLogger(SettingPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            } else {
+            } else if (!ignoreNoUpdate) {
                 JOptionPane.showMessageDialog(null, Config.getResource("Util.currentVersion") + Util.VERSION + "\n" +
                         Config.getResource("Util.remoteVersion") + remote.getVersion() + Config.getResource("Util.noUpdate"));
             }

@@ -279,7 +279,7 @@ public class SettingPanel extends javax.swing.JPanel implements Initable {
 
             public void run() {
                 Version remote = Util.getRemoteVersion();
-                Util.checkUpdate(remote);
+                Util.checkUpdate(remote,false);
                 jButton1.setEnabled(true);
             }
         }.start();
