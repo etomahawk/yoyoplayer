@@ -38,7 +38,7 @@ class CheckThread extends Thread {
                 Version ver = Util.getRemoteVersion();
                 if (ver != null) {
                     Config.getConfig().setLastCheckUpdate(new Date());
-                    Util.checkUpdate(ver);
+                    Util.checkUpdate(ver,true);
                 }
             }
         } else if (s.equals(Config.CHECK_MONTH)) {
@@ -48,7 +48,7 @@ class CheckThread extends Thread {
                 Version ver = Util.getRemoteVersion();
                 if (ver != null) {
                     Config.getConfig().setLastCheckUpdate(new Date());
-                    Util.checkUpdate(ver);
+                    Util.checkUpdate(ver,true);
                 }
             }
         } else if (s.equals(Config.CHECK_WEEK)) {
@@ -58,7 +58,7 @@ class CheckThread extends Thread {
                 Version ver = Util.getRemoteVersion();
                 if (ver != null) {
                     Config.getConfig().setLastCheckUpdate(new Date());
-                    Util.checkUpdate(ver);
+                    Util.checkUpdate(ver,true);
                 }
             }
         } else if (s.equals(Config.CHECK_NONE)) {
