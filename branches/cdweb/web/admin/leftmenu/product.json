@@ -1,0 +1,21 @@
+[{
+    text:'基本属性',
+    id:'attribute_core',
+    leaf:true
+},{
+    text:'扩展属性',
+    id:'attribute_extend',
+    leaf:true
+},{
+    text:'商品分类',
+    id:'category',
+    leaf:true
+},{
+    text:'商品信息',
+    id:'product',
+    leaf:true
+},{
+    text:'计量单位',
+    id:'uom',
+    leaf:true
+}]

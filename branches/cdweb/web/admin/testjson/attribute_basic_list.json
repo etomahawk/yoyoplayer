@@ -1,0 +1,8 @@
+{"list":[
+     {"id":1,"attributeType":"COMMON",'valueType':'STRING',"name":"商品名","description":"desc1","defaultValue":"value1","code":"full_title","maxLength":"255"},
+     {"id":2,"attributeType":"PAPER",'valueType':'STRING',"name":"品名","description":"desc2","defaultValue":"value2","code":"title","maxLength":"255"},
+     {"id":3,"attributeType":"COMMON",'valueType':'STRING',"name":"品牌","description":"desc3","defaultValue":"value3","code":"icon","maxLength":"255"},
+     {"id":4,"attributeType":"COMMON",'valueType':'NUMBER',"name":"克重","description":"desc4","defaultValue":"value4","code":"weight","maxLength":"20"},
+     {"id":5,"attributeType":"PAPER",'valueType':'STRING',"name":"规格","description":"desc5","defaultValue":"value5","code":"model","maxLength":"255"},
+     {"id":6,"attributeType":"PAPER",'valueType':'STRING',"name":"等级","description":"desc6","defaultValue":"value6","code":"level","maxLength":"10"}
+ ],"totalSize":50,"success":true}

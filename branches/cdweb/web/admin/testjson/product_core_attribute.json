@@ -1,0 +1,9 @@
+{
+    actionName: 'paper-core-attribute-save',
+    fields: [
+        {fieldName: 'brand', fieldLabel: '品牌', xtype: 'textfield', value: 'tiger', disabled: true},
+        {fieldName: 'productName', fieldLabel: '产品名称', xtype: 'textfield', value: '老虎机', disabled: true},
+        {fieldName: 'grammage', fieldLabel: '克重', xtype: 'textfield', value: '100', disabled: true},
+        {fieldName: 'description', fieldLabel: '备注', xtype: 'textarea', value: 'xyxfjaworaw'}
+    ]
+}

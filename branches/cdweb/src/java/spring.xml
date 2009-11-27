@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="byType" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    <context:annotation-config/>
+
+    <bean id="propertiesManager" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" p:placeholderPrefix="#[" p:placeholderSuffix="]">
+        <property name="locations">
+            <list>
+                <value>classpath:application.properties</value>
+                <value>classpath:build.properties</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" p:maxActive="50" p:testWhileIdle="true"
+          p:driverClassName="#[global.db.driver.class.name]" p:url="#[global.db.jdbc.url]" p:username="#[global.db.user.name]" p:password="#[global.db.password]"/>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" p:dataSource-ref="dataSource">
+        <property name="packagesToScan">
+            <list>
+                <value>com.chinacnd.b2b.paper.entities</value>
+                <value>com.chinacnd.b2b.paper.entities.*</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">#[global.db.hibernate.dialect]</prop>
+                <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.default_batch_fetch_size">10</prop>
+                <prop key="hibernate.autoReconnect">true</prop>
+                <prop key="hibernate.failOverReadOnly">false</prop>
+                <prop key="hibernate.characterEncoding">utf-8</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">#[global.db.enable.hibernate.sql.log]</prop>
+                <prop key="hibernate.format_sql">#[global.db.enable.hibernate.sql.format]</prop>
+            </props>
+        </property>
+    </bean>
+
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+        p:dataSource-ref="dataSource" p:sessionFactory-ref="sessionFactory">
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="*"  read-only="false" rollback-for="ServiceException"/>
+        </tx:attributes>
+    </tx:advice>
+
+
+    <bean id="dataAccess" class="com.chinacnd.framework.db.DataAccess" p:sessionFactory-ref="sessionFactory"/>
+
+    <!--dao-->
+    <bean id="areaDAO" class="com.chinacnd.b2b.paper.dao.enterprise.AreaDAO"/>
+    <bean id="enterpriseDAO" class="com.chinacnd.b2b.paper.dao.enterprise.EnterpriseDAO"/>
+    <bean id="productDAO" class="com.chinacnd.b2b.paper.dao.product.ProductDAO"/>
+    <bean id="adminUserDAO" class="com.chinacnd.b2b.paper.dao.user.AdminUserDAO"/>
+    <bean id="coreAttributeDAO" class="com.chinacnd.b2b.paper.dao.product.CoreAttributeDAO"/>
+    <bean id="extendAttributeDAO" class="com.chinacnd.b2b.paper.dao.product.ExtendAttributeDAO"/>
+    <bean id="categoryDAO" class="com.chinacnd.b2b.paper.dao.product.CategoryDAO"/>
+    <bean id="measureUnitDAO" class="com.chinacnd.b2b.paper.dao.product.MeasureUnitDAO"/>
+    <bean id="extendAttributeValueDAO" class="com.chinacnd.b2b.paper.dao.product.ExtendAttributeValueDAO"/>
+    
+    <!--services-->
+    <bean id="areaService" class="com.chinacnd.b2b.paper.service.enterprise.AreaService"/>
+    <bean id="adminUserService" class="com.chinacnd.b2b.paper.service.user.AdminUserService"/>
+    <bean id="coreAttributeService" class="com.chinacnd.b2b.paper.service.product.CoreAttributeService"/>
+    <bean id="extendAttributeService" class="com.chinacnd.b2b.paper.service.product.ExtendAttributeService"/>
+    <bean id="categoryService" class="com.chinacnd.b2b.paper.service.product.CategoryService"/>
+    <bean id="measureUnitService" class="com.chinacnd.b2b.paper.service.product.MeasureUnitService"/>
+    <bean id="enterpriseService" class="com.chinacnd.b2b.paper.service.enterprise.EnterpriseService"/>
+    <bean id="productService" class="com.chinacnd.b2b.paper.service.product.ProductService"/>
+</beans>

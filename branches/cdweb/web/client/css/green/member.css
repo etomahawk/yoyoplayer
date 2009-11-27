@@ -1,0 +1,23 @@
+/* CSS Document */
+@import "css.css";
+.nav { width:208px; float:left; border:1px solid #638CA8;  }
+.nav .nav_title{ font-size:14px; color:#ffffff; line-height:25px; height:25px; text-indent:10px; background-color:#638CA8; font-weight:bold;}
+
+.nav	.member_menu{ float:left; display:block; width:200px;  padding-left:7px; }
+.nav	.member_menu li{ float:left;  width:180px;  line-height:25px; height:25px; padding-left:10px;  }
+.nav	.member_menu .col1{ float:left; background:url(../images/icon_01.gif) 	left   no-repeat;  padding-left:23px; }
+.nav	.member_menu .col2{ float:left; background:url(../images/icon_02.gif) 	left   no-repeat;  padding-left:23px; }
+.nav	.member_menu .col3{ float:left; background:url(../images/icon_03.gif) 	left   no-repeat;  padding-left:23px; }
+.nav	.member_menu .col4{ float:left; background:url(../images/icon_04.gif) 	left   no-repeat;  padding-left:23px; }
+.nav	.member_menu .col5{ float:left; background:url(../images/icon_05.gif) 	left   no-repeat;  padding-left:23px; }
+.nav	.member_menu .col6{ float:left; background:url(../images/icon_06.gif) 	left   no-repeat;  padding-left:23px; }
+.nav	.member_menu .col7{ float:left; background:url(../images/icon_07.gif) 	left   no-repeat;  padding-left:23px; }
+.nav	.member_menu .col8{ float:left; background:url(../images/icon_08.gif) 	left   no-repeat;  padding-left:23px; }
+.nav	.member_menu .col9{ float:left; background:url(../images/icon_09.gif) 	left   no-repeat;  padding-left:23px; }
+.nav	.member_menu li a{ display:block; line-height:18px; color:#000; height:18px;  font-size:12px; font-family:"宋体"; padding-left:15px;line-height:25px; height:25px; }
+.nav	.member_menu li a:hover{ text-decoration:none;   color:#ff0000; font-size:12px; font-family:"宋体"; }
+
+.nav	.member_menu a.hot{ text-decoration:none;  color:#113981; font-weight:bold;font-size:12px; font-family:"宋体"; }
+.nav	.member_menu a.hot:hover{ text-decoration:none; color:#113981; font-weight:bold;font-size:12px; font-family:"宋体"; }
+.nav	.blank10{ line-height:10px; height:10px; clear:both}
+.red{ color:#ff0000;}

@@ -1,0 +1,51 @@
+/* CSS Document */
+@import "css.css";
+.main_content{ width:947px;}
+.main_content	.product_left{ width:210px; float:left;}
+.main_content	.product_left .nav_title{ width:210px; height:25px; line-height:25px; border:1px solid #638CA8; background-color:#638CA8; font-size:14px; color:#ffffff; text-indent:8px; font-weight:bold;}
+.main_content	.product_left .nav_title .span1{ float:left; width:160px; line-height:25px; height:25px }
+.main_content	.product_left .nav_title .span2{ float:right; width:50px; line-height:22px; height:22px;padding-top:3px }
+.main_content	.product_left .nav_class{width:190px; line-height:20px;  border-left:1px solid #638CA8; border-right:1px solid #638CA8; border-bottom:1px solid #638CA8; padding:10px 10px 10px 10px; }
+.main_content	.product_left .nav_class	li{ line-height:20px; padding-left:14px;  }
+.main_content	.product_left .nav_class		.parentClass_jia{ background:url(../images/jia.gif)  no-repeat left 3px;font-weight:bold; }
+.main_content	.product_left .nav_class		.parentClass_jian{ background:url(../images/jianhao.gif) no-repeat left 3px ; font-weight:bold;}
+.main_content	.product_left .nav_class		.chilcClass{ background:url(../images/li_icon.gif) no-repeat  14px; ; padding-left:26px;}
+.main_content	.product_left .nav_class	li 	a.hot{ font-weight:bold;}
+
+
+/*产品列表*/
+.main_content	.product_right{ width:723px; float:right; }
+.main_content	.product_right	.product_list td{ padding-left:5px;}
+.main_content	.product_right	.product_nav{font-size:14px; color:#003893;  font-weight:bold; line-height:25px; height:25px; border-bottom:1px dotted #cccccc; }
+.main_content	.product_right	.col1{ width:227px; float:left; border:1px solid #cccccc; padding:5px; text-align:center; }
+.main_content	.product_right	.col2{ width:227px; float:left; border:1px solid #cccccc; padding:5px; text-align:center; margin-left:3px;}
+.main_content	.product_right	.col3{ width:227px; float:right; border:1px solid #cccccc; padding:5px; text-align:center;}
+
+
+.main_content	.product_right	.pic{ width:103px; float:left;text-align:center; padding-top:25px; line-height:25px;}
+.main_content	.product_right	.info{ width:116px; float:right;text-align:left; line-height:20px; padding-left:8px; }
+.main_content	.product_right	.pro_price{ width:227px; text-align:center; line-height:24px; clear:both;}
+.main_content	.product_right	.action{ width:227px;text-align:center;line-height:30px; height:30px; clear:both;}
+
+/*分页开始*/
+
+.main_content	.product_right	.pro_page{ width:713px; text-align:right; height:30px; line-height:30px; }
+.main_content	.product_right	.pro_page	a{ BORDER-RIGHT: #ccc 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #ccc 1px solid; PADDING-LEFT: 5px; BACKGROUND: #fff; PADDING-BOTTOM: 1px; MARGIN: 5px 5px 0px 0px; BORDER-LEFT: #ccc 1px solid; COLOR: #1f3a87; PADDING-TOP: 2px; BORDER-BOTTOM: #ccc 1px solid }
+.main_content	.product_right	.productinfo{ width:713px; float:left; border:1px solid #cccccc; padding:5px; text-align:center;}
+.main_content	.product_right	.productinfo	.pic{ width:103px; float:left;text-align:center; padding-top:25px; line-height:25px;}
+.main_content	.product_right	.productinfo	.info{ width:600px; float:right;text-align:left; line-height:20px; padding-left:8px; }
+.main_content	.product_right	.productinfo	.pro_price{ width:600px;line-height:24px; clear:both; text-align:left;padding-left:113px;}
+.main_content	.product_right	.productinfo	.action{ width:600px;text-align:left;line-height:30px; height:30px;padding-left:113px;}
+
+
+/*产品信息页标签*/
+
+.main_content	.product_right	.Productbox { WIDTH: 722px; border-top:1px solid #cccccc;border-left:1px solid #cccccc;border-right:1px solid #cccccc; clear:both;}
+.main_content	.product_right	.Productbox UL {background-color:#efefef;LINE-HEIGHT: 25px; HEIGHT: 25px; PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px;}
+.main_content	.product_right	.Productbox LI {DISPLAY: block;  FLOAT: left; MARGIN-BOTTOM: 2px; WIDTH: 64px; CURSOR: pointer; COLOR: #424040; MARGIN-RIGHT: 1px; TEXT-ALIGN: center
+}
+.main_content	.product_right	.Productbox LI SPAN {COLOR: #669738
+}
+.main_content	.product_right	.Productbox LI.hover {DISPLAY: block; background-color:#646A78; color:#ffffff; font-weight:bold; FLOAT: left; MARGIN-BOTTOM: 2px; WIDTH: 64px; CURSOR: pointer;  TEXT-ALIGN: center
+}
+.main_content	.product_right	.tab{ line-height:25px; padding:5px; text-indent:2em;WIDTH: 712px; border:1px solid #cccccc;clear:both; }

@@ -1,0 +1,15 @@
+/* CSS Document */
+
+@import "css.css";
+.main_content{ width:947px;}
+.main_content	.col1{ width:470px; float:left;}
+.main_content	.col2{ width:470px; float:right;}
+
+.main_content	.col1	ul { width:470px; float:left;}
+.main_content	.col1	.title{ width:200px; float:left}
+.main_content	.col1	.value{ width:270px; float:left; clear:both;}
+
+
+.main_content	.col2	ul { width:470px; float:left;}
+.main_content	.col2	.title{ width:200px; float:left}
+.main_content	.col2	.value{ width:270px; float:left}

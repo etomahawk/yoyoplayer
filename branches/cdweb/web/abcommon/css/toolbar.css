@@ -1,0 +1,106 @@
+.add {
+    background-image:url(../images/add.gif) !important;
+}
+.edit {
+    background-image:url(../images/edit.gif) !important;
+}
+.delete {
+    background-image:url(../images/delete.gif) !important;
+}
+.search {
+    background-image:url(../images/search.gif) !important;
+}
+.attachment {
+    background-image:url(../images/attachment.gif) !important;
+}
+.upload {
+    background-image:url(../images/upload.gif) !important;
+}
+.relation {
+    background-image:url(../images/relation.gif) !important;
+}
+.columns {
+    background-image:url(../images/columns.gif) !important;
+}
+.confirm {
+    background-image:url(../images/confirm.gif) !important;
+}
+.human {
+    background-image:url(../images/human.gif) !important;
+}
+.notice {
+    background-image:url(../images/notice.gif) !important;
+}
+.score {
+    background-image:url(../images/score.gif) !important;
+}
+.send {
+    background-image:url(../images/send.gif) !important;
+}
+.logout {
+    background-image:url(../images/logout.gif) !important;
+}
+.classroom {
+    background-image:url(../images/classroom.gif) !important;
+}
+.execute {
+    background-image:url(../images/execute.gif) !important;
+}
+.end {
+    background-image:url(../images/end.gif) !important;
+}
+.pass {
+    background-image:url(../images/pass.gif) !important;
+}
+.refuse {
+    background-image:url(../images/refuse.gif) !important;
+}
+.view {
+    background-image:url(../images/view.gif) !important;
+}
+.reply {
+    background-image:url(../images/reply.gif) !important;
+}
+.close {
+    background-image:url(../images/close.gif) !important;
+}
+.guide {
+    background-image:url(../images/guide.gif) !important;
+}
+.previous {
+    background-image:url(../images/previous.png) !important;
+}
+.next {
+    background-image:url(../images/next.png) !important;
+}
+.finish {
+    background-image:url(../images/finish.png) !important;
+}
+.export {
+    background-image:url(../images/excel.gif) !important;
+}
+.finance {
+    background-image:url(../images/finance.png) !important;
+}
+
+.to-left-btn {
+    background-image:url(../images/left2.gif) !important;
+}
+
+.to-right-btn {
+    background-image:url(../images/right2.gif) !important;
+}
+
+.to-left-2-btn {
+    background-image:url(../images/left22.gif) !important;
+}
+
+.to-right-2-btn {
+    background-image:url(../images/right22.gif) !important;
+}
+
+.tree-node-highlight{
+    font-weight: bold;
+    border-top:1px dashed #ff0000;
+    border-bottom:1px dashed #ff0000;
+}

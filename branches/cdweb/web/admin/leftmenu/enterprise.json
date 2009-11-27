@@ -1,0 +1,17 @@
+[{
+    text:'地区信息',
+    id:'area',
+    leaf:true
+},{
+    text:'企业信息',
+    id:'enterprise',
+    leaf:true
+},{
+    text:'贸易关系',
+    id:'trade-relation',
+    leaf:true
+},{
+    text:'贸易商品',
+    id:'trade-product',
+    leaf:true
+}]

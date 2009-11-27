@@ -1,0 +1,1 @@
+{"message":"","id":0,"list":[{"id":1,"phone":"","email":"","remark":"","status":"0","name":"系统管理员","createdate":"2009-11-03","gender":"","role":{"id":1,"charges":"","title":"系统管理员","remark":"","createdate":"2009-11-03","code":"admin","customer":null,"customers":""},"code":"admin","password":"admin"}],"totalSize":0,"success":true}

@@ -1,0 +1,7 @@
+{"list":[
+     {"id":1,"valueType":"STRING","name":"打印类型","description":"desc1","defaultValue":"value1","code":"printerType","maxLength":"255","enabled":true},
+     {"id":2,"valueType":"DATE","name":"生产日期","description":"desc2","defaultValue":"value2","code":"dt","maxLength":"80","enabled":true},
+     {"id":3,"valueType":"STRING","name":"生产批次","description":"desc3","defaultValue":"value3","code":"batch","maxLength":"20","enabled":false},
+     {"id":4,"valueType":"STRING","name":"颜色","description":"desc4","defaultValue":"value4","code":"color","maxLength":"50","enabled":true},
+     {"id":5,"valueType":"STRING","name":"包装","description":"desc5","defaultValue":"value5","code":"color","maxLength":"100","enabled":true}
+ ],"totalSize":5,"success":true}

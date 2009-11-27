@@ -1,0 +1,56 @@
+/* CSS Document */
+@import "css.css";
+.banner{ width:947px; height:190px;}
+.banner .left1{width:733px; height:190px; float:left;}
+.banner	.right1{ width:210px; height:190px;float:right; background-color:#E8E8E8}
+.banner .right1 li{ float:left; line-height:25px; height:25px; text-indent:8px; width:210px;}
+.banner .right1 .login_title{ float:left; text-align:right;line-height:25px; height:25px; padding-right:6px;width:62px;;}
+.banner .right1 .login_value{ float:left; line-height:25px; height:25px; text-indent:8px;width:132px;;}
+.banner .right1 .blank12{ width:210px; height:15px; line-height:15px; overflow:hidden;}
+.banner .right1	b{ font-weight:bold; color: #003893; font-size:12px;}
+.banner .right1	.num{  color: #CD362D; font-size:12px; padding-left:2px; padding-right:2px;}
+.banner  input{font-size:12px; vertical-align:middle;}
+
+/**/
+.main_content{ width:947px;}
+.main_content	.main_left1{ width:733px; float:left}
+
+.main_content	.notice{ width:733px;height:53px; float:left}
+.main_content	.notic1{width:64px;height:53px; background:url(images/notice.jpg);float:left }
+.main_content	.notic2{width:662px;height:53px; background:url(images/notice_bg.jpg);float:left; line-height:53px;  }
+.main_content	.notic3{width:7px; height:53px;background:url(images/notice_end.jpg);float:left;  }
+
+.main_content	.class_left{ float:left;width:361px; height:181px; background:url(images/productbg.gif) no-repeat left;}
+.main_content	.class_span{ float:left;width:733px; height:181px; background:url(images/productbg3.gif) no-repeat left;}
+.main_content	.class_right{ float:right;width:361px; height:181px; background:url(images/productbg.gif) no-repeat left;}
+.main_content	.class_left2{ float:left;width:361px; height:181px; ;}
+
+.main_content	.pic{ width:150px; height:181px; float:left; text-align:center; vertical-align:middle;   }
+.main_content	.blanktop{height:40px; overflow:hidden; line-height:25px}
+.main_content	.title{ width:211px; height: 45px; float:left; line-height:45px; padding-top:25px;}
+.main_content	.value{ width:201px; height: 95px; float:left;line-height:25px; padding-right:5px;  }
+.main_content	.subclass{ width:201px; height: 95px; float:left;line-height:25px; padding-right:5px;  }
+
+.main_content	.big_pic{ width:150px; height:181px; float:left; text-align:center; vertical-align:middle;   }
+
+.main_content	.big_title{ width:211px; height: 45px; float:left; line-height:45px; padding-top:25px;}
+.main_content	.big_value{ width:201px; height: 135px; float:left;line-height:25px; padding-right:5px;  }
+
+/*右边*/
+.main_content	.main_right1{ width:210px; float:right; margin-top:5px;}
+.main_content	li{ width:208px; float:left; line-height:25px; height:25px;}
+.main_content	.main_right1 .rtitle{ width:208px; background:url(images/right_titlebg.jpg) repeat-x left; height:29px; line-height:29px; border:1px solid #D2D2D2; text-indent:10px;font-size:14px; font-weight:bold; color:#003893;}
+.main_content	.main_right1 .rcontent{ width:208px; height:140px;  border-left:1px solid #D2D2D2;border-right:1px solid #D2D2D2; border-bottom:1px solid #D2D2D2;text-indent:10px; line-height:20px; }
+.main_content	.main_right1 .rcontent2{ width:198px; height:155px;  border-left:1px solid #D2D2D2;border-right:1px solid #D2D2D2; border-bottom:1px solid #D2D2D2;padding-top:10px;padding-left:5px;padding-right:5px; line-height:20px; }
+/*以登录表格*/
+.main_content	.class_login{ float:right;width:733px; height:35px;  text-align:center}
+.main_content	.class_login li{ float:left;width:72px;  text-align:center; margin-left:1px;}
+.main_content	.class_login li a{ background:url(images/btn_class.jpg) no-repeat left ; width:68px; height:27px; display:block; line-height:27px;  text-align:center; }
+.main_content	.class_login li a:hover{ background:url(images/btn_class_hot.jpg) no-repeat left ; width:68px; height:27px; display:block; line-height:27px;  text-align:center; }
+/*我的商品*/
+.main_content	.product{ float:left;width:733px; height:220px;  text-align:center}
+.main_content	.txt_title{ float:left;width:733px; height:30px; line-height:30px; font-size:14px; color:#003893;  text-align:left; font-weight:bold;}
+.main_content	.txt_title .span1{ width:365px; float:left}
+.main_content	.txt_title .span1{ width:365px; float:right}
+
+.blanklink{ line-height:3px; height:3px; clear:both;}

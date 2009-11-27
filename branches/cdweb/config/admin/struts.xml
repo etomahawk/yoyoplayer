@@ -1,0 +1,66 @@
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <constant name="struts.devMode" value="true"/>
+    <constant name="struts.configuration.xml.reload" value="false"/>
+    <constant name="struts.i18n.reload" value="false"/>
+
+    <constant name="struts.freemarker.templatesCache" value="true"/>
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
+    <constant name="struts.multipart.maxSize" value="52428800"/><!--50M = 52428800-->
+    <constant name="struts.enable.DynamicMethodInvocation" value="false"/>
+    <constant name="struts.custom.i18n.resources" value="message"/>
+    <constant name="struts.locale" value="zh-cn"/>
+    <constant name="struts.action.extension" value="htm,action"/>
+    <constant name="struts.objectFactory" value="com.cd.framework.struts.CustomSpringObjectFactory"/>
+    <constant name="struts.objectFactory.spring.autoWire" value="name"/>
+    <constant name="struts.objectFactory.spring.useClassCache" value="true"/>
+    <constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
+    <constant name="struts.ui.theme" value="simple"/>
+    <constant name="struts.enable.SlashesInActionNames" value="true"/>
+
+    <package name="cdcommon" abstract="true" extends="struts-default" >
+        <result-types>
+            <result-type name="json" class="com.cd.framework.struts.result.JSONResult"/>
+        </result-types>
+
+        <interceptors>
+            <interceptor name="content" class="com.cd.framework.struts.interceptor.ContentTypeInterceptor"/>
+            <interceptor name="exception" class="com.cd.framework.struts.interceptor.ExceptionInterceptor"/>
+            <interceptor name="needLogin" class="com.cd.b2b.web.interceptor.NeedLoginInterceptor"/>
+            <interceptor name="needAccess" class="com.cd.b2b.web.interceptor.NeedAccessInterceptor"/>
+            <interceptor name="trimParameters" class="com.cd.framework.struts.interceptor.TrimParametersInterceptor"/>
+            <interceptor name="commonContextInjectInterceptor" class="com.cd.b2b.web.interceptor.CommonContextInjectInterceptor"/>
+            <interceptor-stack name="default">
+                <interceptor-ref name="commonContextInjectInterceptor"/>
+                <interceptor-ref name="needLogin"/>
+                <!--<interceptor-ref name="needAccess"/>-->
+                <interceptor-ref name="i18n"/>
+                <interceptor-ref name="modelDriven"/>
+                <interceptor-ref name="staticParams"/>
+                <interceptor-ref name="exception"/>
+                <interceptor-ref name="fileUpload"/>
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="content"/>
+                <interceptor-ref name="trimParameters"/><!--代替struts的 interceptor-ref name="params"/ 增加去除POST上来的字段前后空格功能-->
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="default"/>
+
+        <global-results>
+            <result name="exception">/common/exception.jsp</result>
+            <result type="redirect" name="noLogin">/common/noLogin.htm</result>
+            <result type="redirect" name="noAccess">/common/noAccess.htm</result>
+            <result name="exception.json" type="json">
+                <param name="expression">exception</param>
+            </result>
+        </global-results>
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception" result="exception"/>
+        </global-exception-mappings>
+
+    </package>
+    <include file="admin.xml"/>
+    <include file="old.xml"/>
+
+</struts>
