@@ -114,7 +114,6 @@ public class ProductService {
             throw new ServiceException("主单位必须有且只能有一个");
         }
         product.setMeasureUnitSetting(list);
-        productDAO.saveOrUpdate(product);
     }
 
     @Transactional(readOnly = true)
