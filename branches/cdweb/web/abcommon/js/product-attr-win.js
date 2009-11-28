@@ -19,6 +19,8 @@ function ProductAttrWin(productId){
                 this.saveCoreAttr();
             }else if(curTab.getId() == '_product_extend_attr_tab'){
                 this.saveExtendAttr();
+            }else{
+                this.saveUom();
             }
         }).createDelegate(this)
     });
@@ -97,7 +99,7 @@ function ProductAttrWin(productId){
         }]
     });
 
-    var sm = new Ext.grid.CheckboxSelectionModel();
+    var sm = new Ext.grid.CheckboxSelectionModel({handleMouseDown: Ext.emptyFn});
     this.gridUomSetting = new SimpleGrid.Panel({
         id: '_product_uom_setting_tab',
         title: '计量单位',
@@ -109,13 +111,42 @@ function ProductAttrWin(productId){
         sm: sm,
         cm: [
              sm,
-            {header: '单位名称', dataIndex: 'measureUnitName', width:100},
-            {header: '是否有效', dataIndex: 'enabled', width:60, renderer: function(val){
-	    	return val === true?'是':'否'
-             }},
+            {header: '单位名称', dataIndex: 'measureUnitName', width:30},
             {header: '换算比例',dataIndex: 'quotiety',
                 editor: new Ext.grid.GridEditor(new Ext.form.TextField({allowBlank: false}))
-            }
+            },
+            {header: '是否基准',dataIndex: 'mainUnit',
+                editor:new Ext.grid.GridEditor(new Ext.form.ComboBox({
+                   store: new Ext.data.SimpleStore({
+                      fields:['value','text'],
+                      data: Constants.BooleanType
+                   }),
+                   mode: 'local',
+                   triggerAction: 'all',
+                   valueField: 'value',
+                   displayField: 'text',
+                   readOnly:true
+                })),
+                renderer: function(kk){
+                   return Constants.getValueByKey(kk, Constants.BooleanType);
+                }
+            },
+            {header: '是否启用',dataIndex: 'enabled',
+                editor:new Ext.grid.GridEditor(new Ext.form.ComboBox({
+                   store: new Ext.data.SimpleStore({
+                      fields:['value','text'],
+                      data: Constants.Enabled
+                   }),
+                   mode: 'local',
+                   triggerAction: 'all',
+                   valueField: 'value',
+                   displayField: 'text',
+                   readOnly:true
+                })),
+                renderer: function(kk){
+                   return Constants.getValueByKey(kk, Constants.Enabled);
+                }
+           }
         ],
         recordFn: [
            {name: 'id', type: 'int' },
@@ -125,7 +156,8 @@ function ProductAttrWin(productId){
            {name: 'mainUnit', type: 'boolean'},
            {name: 'quotiety', type: 'float'}
         ],
-        url: 'testjson/product_rate_list.json'
+        //url: 'testjson/product_rate_list.json'
+        url: 'product/product-list-measure-units'
     });
 
     var tabpnl = new Ext.TabPanel({
@@ -141,7 +173,7 @@ function ProductAttrWin(productId){
         if(newTab.getId() == '_product_extend_attr_tab' && !this.blExtendTabReady){
             this.initExtendTab(newTab);
         }else if(newTab.getId() == '_product_uom_setting_tab' && !this.blUomTabReady){
-            this.gridUomSetting.load();
+            this.gridUomSetting.loadNotPaging({id: this.productId});
             this.blUomTabReady = true;
         }
     }).createDelegate(this));
@@ -311,6 +343,53 @@ ProductAttrWin.prototype = {
         Ext.Ajax.request({
             //url: 'testjson/get_parameters.jsp',
             url: 'product/product-save-extend-attributes',
+            method: 'POST',
+            success: function(resp){
+                var respText = Ext.util.JSON.decode(resp.responseText);
+                if(!respText)
+                    return;
+                if(respText.success === true){
+                    Ext.Msg.show({
+                        title: '系统消息',
+                        msg: '保存成功!',
+                        buttons: {ok:'返回'}
+                    });
+                }else{
+                    Ext.Msg.show({
+                        title: '系统消息',
+                        msg: '保存失败! '+ (respText.message || ''),
+                        buttons: {ok:'返回'},
+                        icon : Ext.Msg.ERROR
+                    });
+                }
+            },
+            jsonData: saveData
+        });
+    },
+
+    saveUom: function(){
+
+        //获取选中的记录
+        var sels = this.gridUomSetting.grid.getSelectionModel().getSelections();
+        if(sels.length==0){
+            Ext.Msg.alert('系统消息', '请选择需要设置的计量单位!');
+            return;
+        }
+
+        var arr = [];
+        Ext.each(sels, function(item){
+           arr.push({
+              measureUnitId: item.get('measureUnitId'),
+              mainUnit: item.get('mainUnit'),
+              quotiety: item.get('quotiety'),
+              enabled: item.get('enabled')
+           });
+        });
+        var saveData = {productId: this.productId, productUnitSettings: arr};
+
+        Ext.Ajax.request({
+            //url: 'testjson/get_parameters.jsp',
+            url: 'product/product-save-measure-units',
             method: 'POST',
             success: function(resp){
                 var respText = Ext.util.JSON.decode(resp.responseText);

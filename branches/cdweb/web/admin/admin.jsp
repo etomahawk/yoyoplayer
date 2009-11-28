@@ -62,6 +62,11 @@
                     [false, '禁用']
                 ],
 
+                BooleanType: [
+                    [true, '是'],
+                    [false, '否']
+                ],
+
                 //企业类型
                 EnterpriseType : [
                     ["BRANCH", "分公司"],

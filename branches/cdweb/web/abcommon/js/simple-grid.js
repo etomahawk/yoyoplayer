@@ -127,6 +127,12 @@ SimpleGrid.Panel.prototype = {
         });
     },
 
+    loadNotPaging: function(params){
+        this.getStore().load({
+            params: params
+        });
+    },
+
     /**
      * 为表格的store绑定查询条件
      *
