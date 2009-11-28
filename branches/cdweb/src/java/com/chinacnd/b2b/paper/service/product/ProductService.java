@@ -96,7 +96,7 @@ public class ProductService {
                 ProductUnitSetting pu = null;
                 if (form.getId() == null || form.getId() <= 0) {
                     pu = new ProductUnitSetting();
-                    pu.setProduct(productDAO.findById(productId));
+                    pu.setProduct(product);
                     pu.setUnit(measureUnitDAO.findById(form.getMeasureUnitId()));
                 } else {
                     pu = productUnitSettingDAO.findById(form.getId());
@@ -114,6 +114,7 @@ public class ProductService {
             throw new ServiceException("主单位必须有且只能有一个");
         }
         product.setMeasureUnitSetting(list);
+        productDAO.saveOrUpdate(product);
     }
 
     @Transactional(readOnly = true)

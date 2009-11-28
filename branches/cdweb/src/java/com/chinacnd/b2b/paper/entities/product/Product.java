@@ -64,7 +64,7 @@ public class Product extends IdEntity {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;//所属分类，可能为空，则表示新导进来的产品
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductUnitSetting> measureUnitSetting;//产品计量单位转换系数设置
 
     public Category getCategory() {
