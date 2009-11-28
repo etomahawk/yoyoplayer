@@ -376,9 +376,7 @@ ProductAttrWin.prototype = {
             return;
         }*/
 
-        var sels = this.gridUomSetting.grid.getStore().queryBy(function(record){
-           return record.get('enabled');
-        });
+        var sels = this.gridUomSetting.grid.getStore().getRange();
         
         var arr = [];
         /*
@@ -390,8 +388,8 @@ ProductAttrWin.prototype = {
               enabled: item.get('enabled')
            });
         });*/
-        for(var i=0;i<sels.getCount();i++){
-           var sel = sels.get(i);
+        for(var ii=0;ii<sels.length;ii++){
+           var sel = sels[ii];
            var uos = {
               measureUnitId: sel.get('measureUnitId'),
               mainUnit: sel.get('mainUnit'),
