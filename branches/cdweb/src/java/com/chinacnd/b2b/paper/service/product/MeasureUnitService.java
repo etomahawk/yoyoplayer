@@ -66,7 +66,7 @@ public class MeasureUnitService {
     public List<MeasureUnit> list(MeasureUnitForm form) {
         Page page = Page.from(form);
         OrderBy orderBy = OrderBy.from(form);
-        List<MeasureUnit> list = measureUnitDAO.list(page, orderBy);
+        List<MeasureUnit> list = measureUnitDAO.listAll(page, orderBy);
         form.setTotalSize(page.getTotalCount());
         return list;
     }

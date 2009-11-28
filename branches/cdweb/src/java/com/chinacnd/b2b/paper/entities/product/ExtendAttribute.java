@@ -38,7 +38,7 @@ public class ExtendAttribute extends IdEntity {
     @Column(name = "default_value")
     private String defaultValue;//默认值
     @Column(name = "is_enbaled", nullable = false)
-    private boolean enabled;//是否启用
+    private boolean enabled = true;//是否启用
     @Column(name = "description", length = 4000)
     private String description;
 

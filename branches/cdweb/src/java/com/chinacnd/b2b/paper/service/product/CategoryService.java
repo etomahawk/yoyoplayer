@@ -31,6 +31,16 @@ public class CategoryService {
     private ExtendAttributeDAO extendAttributeDAO;
 
     @Transactional(readOnly = true)
+    public List<ExtendAttribute> getParentExtendAttributes(Long categoryId) {
+        return categoryDAO.getParentAttributes(categoryId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ExtendAttribute> getSelfExtendAttributes(Long categoryId) {
+        return categoryDAO.getSelfExtendAttributes(categoryId);
+    }
+
+    @Transactional(readOnly = true)
     public List<Category> loadCategoryByParentId(CategoryForm form) {
         Page page = Page.from(form);
         OrderBy orderBy = OrderBy.from(form);

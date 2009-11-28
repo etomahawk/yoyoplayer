@@ -20,6 +20,7 @@ public class ExtendAttributeDAO extends EntityDAO<ExtendAttribute> {
 
     public List<ExtendAttribute> getExtendAttributesByName(String name, Page page, OrderBy orderBy) {
         Criteria<ExtendAttribute> c = Criteria.of(ExtendAttribute.class);
+        c.eq("enabled", true);
         if (StringUtils.hasText(name)) {
             c.like("name", name);
         }

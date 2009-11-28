@@ -12,11 +12,13 @@ import com.chinacnd.b2b.paper.exception.ServiceException;
 import com.chinacnd.b2b.paper.helper.form.admin.product.ExtendAttributeValueForm;
 import com.chinacnd.b2b.paper.helper.form.admin.product.PaperForm;
 import com.chinacnd.b2b.paper.helper.form.admin.product.ProductForm;
+import com.chinacnd.b2b.paper.helper.form.admin.product.ProductUnitSettingForm;
 import com.chinacnd.b2b.paper.helper.form.admin.product.PulpForm;
 import com.chinacnd.b2b.paper.helper.json.OperationResultJson;
 import com.chinacnd.b2b.paper.helper.json.admin.product.ExtendAttributeValueJson;
 import com.chinacnd.b2b.paper.helper.json.admin.product.PaperJson;
 import com.chinacnd.b2b.paper.helper.json.admin.product.ProductJson;
+import com.chinacnd.b2b.paper.helper.json.admin.product.ProductUnitSettingJson;
 import com.chinacnd.b2b.paper.helper.json.admin.product.PulpJson;
 import com.chinacnd.b2b.paper.service.product.ProductService;
 import com.chinacnd.framework.struts.BaseAction;
@@ -25,8 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Resource;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
@@ -43,6 +43,29 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
     private PaperForm paper = new PaperForm();
     private PulpForm pulp = new PulpForm();
     private List<ExtendAttributeValueForm> extendAttributeValues = new ArrayList<ExtendAttributeValueForm>();
+    private List<ProductUnitSettingForm> productUnitSettings = new ArrayList<ProductUnitSettingForm>();
+    private Long productId;//做为传值用
+
+    @Action(value = "product-list-measure-units")
+    public String listProductMeasureUnits() {
+        List<ProductUnitSettingJson> jsonList = productService.getProductUnitSettings(form);
+        setJsonList(jsonList, form.getTotalSize());
+        return JSON_RESULT;
+    }
+
+    @Action(value = "product-save-measure-units")
+    public String saveProductMeasureUnits() {
+        OperationResultJson json = new OperationResultJson();
+        try {
+            productService.saveProductUnitSettings(productId, productUnitSettings);
+        } catch (ServiceException ex) {
+            ex.printStackTrace();
+            json.setSuccess(false);
+            json.setMessage(ex.getMessage());
+        }
+        setJsonObject(json);
+        return JSON_RESULT;
+    }
 
     @Action(value = "product-list-without-category")
     public String listWithoutCategory() {
@@ -154,7 +177,7 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
     public String saveExtendAttributeValues() {
         OperationResultJson json = new OperationResultJson();
         try {
-            productService.saveExtendAttribute(extendAttributeValues);
+            productService.saveExtendAttribute(productId,extendAttributeValues);
         } catch (Exception ex) {
             ex.printStackTrace();
             json.setMessage(ex.getMessage());
@@ -174,6 +197,10 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
 
     public void setExtendAttributeValues(List<ExtendAttributeValueForm> extendAttributeValues) {
         this.extendAttributeValues = extendAttributeValues;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public ProductForm getModel() {

@@ -17,9 +17,7 @@ import com.chinacnd.framework.struts.BaseAction;
 import com.chinacnd.framework.util.StringUtils;
 import com.opensymphony.xwork2.ModelDriven;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Resource;
 import org.apache.struts2.convention.annotation.Action;
 
@@ -33,7 +31,31 @@ public class CategoryAction extends BaseAction implements ModelDriven<CategoryFo
     private CategoryService categoryService;
     private CategoryForm form = new CategoryForm();
 
+    @Action(value = "category-list-parent-extend-attributes")
+    public String listParentExtendAttributes() {
+        List<ExtendAttribute> list = categoryService.getParentExtendAttributes(form.getId());
+        List<ExtendAttributeJson> jsonList = new ArrayList<ExtendAttributeJson>();
+        for (ExtendAttribute extendAttribute : list) {
+            jsonList.add(new ExtendAttributeJson(extendAttribute));
+        }
+        setJsonList(jsonList);
+        return JSON_RESULT;
+    }
+
+    @Action(value = "category-list-self-extend-attributes")
+    public String listSelfExtendAttributes() {
+        List<ExtendAttribute> list = categoryService.getSelfExtendAttributes(form.getId());
+        List<ExtendAttributeJson> jsonList = new ArrayList<ExtendAttributeJson>();
+        for (ExtendAttribute extendAttribute : list) {
+            jsonList.add(new ExtendAttributeJson(extendAttribute));
+        }
+        setJsonList(jsonList);
+        return JSON_RESULT;
+    }
+
+    @Deprecated
     @Action(value = "category-show-extend-attributes")
+    //此方法只能看到自己的扩展属性，所以标志为过时
     public String listCategoryExtendAttributes() {
         Category category = categoryService.findById(form.getId());
         List<ExtendAttribute> extendAttributes = category.getExtendAttributeList();

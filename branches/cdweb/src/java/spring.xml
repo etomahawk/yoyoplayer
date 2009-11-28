@@ -63,6 +63,7 @@
     <bean id="categoryDAO" class="com.chinacnd.b2b.paper.dao.product.CategoryDAO"/>
     <bean id="measureUnitDAO" class="com.chinacnd.b2b.paper.dao.product.MeasureUnitDAO"/>
     <bean id="extendAttributeValueDAO" class="com.chinacnd.b2b.paper.dao.product.ExtendAttributeValueDAO"/>
+    <bean id="productUnitSettingDAO" class="com.chinacnd.b2b.paper.dao.product.ProductUnitSettingDAO"/>
     
     <!--services-->
     <bean id="areaService" class="com.chinacnd.b2b.paper.service.enterprise.AreaService"/>

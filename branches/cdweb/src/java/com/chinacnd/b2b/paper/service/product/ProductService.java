@@ -7,19 +7,25 @@ package com.chinacnd.b2b.paper.service.product;
 import com.chinacnd.b2b.paper.dao.product.CategoryDAO;
 import com.chinacnd.b2b.paper.dao.product.ExtendAttributeDAO;
 import com.chinacnd.b2b.paper.dao.product.ExtendAttributeValueDAO;
+import com.chinacnd.b2b.paper.dao.product.MeasureUnitDAO;
 import com.chinacnd.b2b.paper.dao.product.ProductDAO;
+import com.chinacnd.b2b.paper.dao.product.ProductUnitSettingDAO;
 import com.chinacnd.b2b.paper.entities.product.Category;
 import com.chinacnd.b2b.paper.entities.product.CategoryType;
 import com.chinacnd.b2b.paper.entities.product.ExtendAttribute;
 import com.chinacnd.b2b.paper.entities.product.ExtendAttributeValue;
+import com.chinacnd.b2b.paper.entities.product.MeasureUnit;
 import com.chinacnd.b2b.paper.entities.product.Paper;
 import com.chinacnd.b2b.paper.entities.product.Product;
+import com.chinacnd.b2b.paper.entities.product.ProductUnitSetting;
 import com.chinacnd.b2b.paper.entities.product.Pulp;
 import com.chinacnd.b2b.paper.exception.ServiceException;
 import com.chinacnd.b2b.paper.helper.form.admin.product.ExtendAttributeValueForm;
 import com.chinacnd.b2b.paper.helper.form.admin.product.PaperForm;
 import com.chinacnd.b2b.paper.helper.form.admin.product.ProductForm;
+import com.chinacnd.b2b.paper.helper.form.admin.product.ProductUnitSettingForm;
 import com.chinacnd.b2b.paper.helper.form.admin.product.PulpForm;
+import com.chinacnd.b2b.paper.helper.json.admin.product.ProductUnitSettingJson;
 import com.chinacnd.framework.db.OrderBy;
 import com.chinacnd.framework.db.Page;
 import com.chinacnd.framework.util.BeanUtils;
@@ -43,6 +49,10 @@ public class ProductService {
     private ExtendAttributeValueDAO extendAttributeValueDAO;
     @Resource
     private ExtendAttributeDAO extendAttributeDAO;
+    @Resource
+    private MeasureUnitDAO measureUnitDAO;
+    @Resource
+    private ProductUnitSettingDAO productUnitSettingDAO;
 
     @Transactional(readOnly = true)
     public String getCategoryTreePath(ProductForm form) throws ServiceException {
@@ -73,6 +83,67 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Product findById(Long id) {
         return productDAO.findById(id);
+    }
+
+    @Transactional
+    public void saveProductUnitSettings(Long productId, List<ProductUnitSettingForm> productUnitSettings) throws ServiceException {
+        Product product = findById(productId);
+        List<ProductUnitSetting> list = new ArrayList<ProductUnitSetting>();
+        int mainUnitCount = 0;
+        for (ProductUnitSettingForm form : productUnitSettings) {
+            //只有前台启用了的才保存起来
+            if (form.isEnabled()) {
+                ProductUnitSetting pu = null;
+                if (form.getId() == null || form.getId() <= 0) {
+                    pu = new ProductUnitSetting();
+                    pu.setProduct(productDAO.findById(productId));
+                    pu.setUnit(measureUnitDAO.findById(form.getMeasureUnitId()));
+                } else {
+                    pu = productUnitSettingDAO.findById(form.getId());
+                }
+                pu.setMainUnit(form.isMainUnit());
+                pu.setQuotiety(form.getQuotiety());
+                if (form.isMainUnit()) {
+                    mainUnitCount++;
+                }
+                list.add(pu);
+            }
+        }
+        //如果主单位不等于一个，则抛出异常
+        if (mainUnitCount != 1) {
+            throw new ServiceException("主单位必须有且只能有一个");
+        }
+        product.setMeasureUnitSetting(list);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductUnitSettingJson> getProductUnitSettings(ProductForm form) {
+        Product product = findById(form.getId());
+        List<ProductUnitSetting> productUnitSettings = product.getMeasureUnitSetting();
+        Page page = Page.from(form);
+        OrderBy orderBy = OrderBy.from(form);
+        List<MeasureUnit> measureUnits = measureUnitDAO.listEnabled(page, orderBy);
+        form.setTotalSize(page.getTotalCount());
+
+        List<ProductUnitSettingJson> list = new ArrayList<ProductUnitSettingJson>();
+        for (MeasureUnit mu : measureUnits) {
+            boolean find = false;
+            for (ProductUnitSetting productUnitSetting : productUnitSettings) {
+                if (mu.equals(productUnitSetting.getUnit())) {
+                    list.add(new ProductUnitSettingJson(productUnitSetting, true));
+                    find = true;
+                    break;
+                }
+            }
+            if (find == false) {
+                ProductUnitSetting productUnitSetting = new ProductUnitSetting();
+                productUnitSetting.setMainUnit(false);
+                productUnitSetting.setProduct(product);
+                productUnitSetting.setUnit(mu);
+                list.add(new ProductUnitSettingJson(productUnitSetting, false));
+            }
+        }
+        return list;
     }
 
     @Transactional(readOnly = true)
@@ -165,17 +236,17 @@ public class ProductService {
     }
 
     @Transactional
-    public void saveExtendAttribute(List<ExtendAttributeValueForm> values) {
+    public void saveExtendAttribute(Long productId, List<ExtendAttributeValueForm> values) {
         for (ExtendAttributeValueForm form : values) {
             ExtendAttributeValue value = null;
             if (form.getId() == null || form.getId() <= 0) {
                 value = new ExtendAttributeValue();
+                value.setAttribute(extendAttributeDAO.findById(form.getExtendAttributeId()));
+                value.setProduct(productDAO.findById(productId));
             } else {
                 value = extendAttributeValueDAO.findById(form.getId());
             }
-            value.setAttribute(extendAttributeDAO.findById(form.getExtendAttributeId()));
             value.setAttributeValue(form.getAttributeValue());
-            value.setProduct(productDAO.findById(form.getProductId()));
             extendAttributeValueDAO.saveOrUpdate(value);
         }
     }

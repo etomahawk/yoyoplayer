@@ -11,10 +11,9 @@ import com.chinacnd.b2b.paper.helper.form.RequestRecordForm;
  *
  * @author Hadeslee
  */
-public class ExtendAttributeValueForm extends RequestRecordForm {
+public class ExtendAttributeValueForm {
 
     private ExtendAttributeValue value = new ExtendAttributeValue();
-    private Long productId;
     private Long extendAttributeId;
 
     public Long getExtendAttributeId() {
@@ -23,14 +22,6 @@ public class ExtendAttributeValueForm extends RequestRecordForm {
 
     public void setExtendAttributeId(Long extendAttributeId) {
         this.extendAttributeId = extendAttributeId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
     }
 
     public void setId(Long id) {

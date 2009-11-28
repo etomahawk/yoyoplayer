@@ -33,14 +33,14 @@ public class CategoryDAO extends EntityDAO<Category> {
         return list;
     }
 
-    public List<ExtendAttribute> getExtendAttributes(Long categoryId) {
+    public List<ExtendAttribute> getSelfExtendAttributes(Long categoryId) {
         Category category = findById(categoryId);
         return category.getExtendAttributeList();
     }
 
     public List<ExtendAttribute> getAllExtendAttributes(Long categoryId) {
         List<ExtendAttribute> parentAttributes = getParentAttributes(categoryId);
-        List<ExtendAttribute> selfAttributes = getExtendAttributes(categoryId);
+        List<ExtendAttribute> selfAttributes = getSelfExtendAttributes(categoryId);
         Set<ExtendAttribute> set = new HashSet<ExtendAttribute>();
         set.addAll(parentAttributes);
         set.addAll(selfAttributes);

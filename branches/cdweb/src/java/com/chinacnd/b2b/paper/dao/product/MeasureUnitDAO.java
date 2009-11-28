@@ -33,7 +33,16 @@ public class MeasureUnitDAO extends EntityDAO<MeasureUnit> {
         return get(id);
     }
 
-    public List<MeasureUnit> list(Page page, OrderBy orderBy) {
+    public List<MeasureUnit> listEnabled(Page page, OrderBy orderBy) {
+        Criteria<MeasureUnit> c = Criteria.of(MeasureUnit.class);
+        c.eq("enabled", true);
+        if (orderBy != null) {
+            c.orderBy(orderBy);
+        }
+        return findByCriteria(c, page);
+    }
+
+    public List<MeasureUnit> listAll(Page page, OrderBy orderBy) {
         Criteria<MeasureUnit> c = Criteria.of(MeasureUnit.class);
         if (orderBy != null) {
             c.orderBy(orderBy);
