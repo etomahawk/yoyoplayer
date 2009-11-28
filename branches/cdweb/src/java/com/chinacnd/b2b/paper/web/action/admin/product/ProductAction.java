@@ -53,7 +53,8 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
         return JSON_RESULT;
     }
 
-    @Action(value = "product-save-measure-units")
+    @Action(value = "product-save-measure-units",
+    interceptorRefs = {@InterceptorRef("json"), @InterceptorRef("adminDefault")})
     public String saveProductMeasureUnits() {
         OperationResultJson json = new OperationResultJson();
         try {
@@ -178,7 +179,7 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
     public String saveExtendAttributeValues() {
         OperationResultJson json = new OperationResultJson();
         try {
-            productService.saveExtendAttribute(productId,extendAttributeValues);
+            productService.saveExtendAttribute(productId, extendAttributeValues);
         } catch (Exception ex) {
             ex.printStackTrace();
             json.setMessage(ex.getMessage());
@@ -207,11 +208,11 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
     public ProductForm getModel() {
         return form;
     }
-    
+
     public PaperForm getPaper() {
         return paper;
     }
-    
+
     public PulpForm getPulp() {
         return pulp;
     }
