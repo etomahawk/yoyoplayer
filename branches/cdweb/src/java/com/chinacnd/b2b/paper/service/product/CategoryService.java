@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class CategoryService {
 
+    private static final int MAX_DEPTH = 4;//最大的深度是4层
     @Resource
     private CategoryDAO categoryDAO;
     @Resource
@@ -61,6 +62,7 @@ public class CategoryService {
             throw new ServiceException("分类名称已经存在，请重新输入");
         }
         Category category = null;
+        //新增
         if (form.getId() == null || form.getId() <= 0) {
             boolean codeExists = categoryDAO.checkCodeExists(form.getCode());
             if (codeExists) {
@@ -68,6 +70,11 @@ public class CategoryService {
             }
             category = new Category();
             Category parent = categoryDAO.findById(form.getParentId());
+            String parentFullCode = parent.getFullCode();
+            String[] paths = StringUtils.split(parentFullCode, "/");
+            if (paths.length >= 4) {
+                throw new ServiceException("商品分类的层数最多只能有4层");
+            }
             parent.setLeaf(false);
             category.setParent(parent);
             category.setType(parent.getType());
@@ -76,8 +83,8 @@ public class CategoryService {
             category.setDescription(form.getDescription());
             category.setLastUpdateDate(new Date());
             categoryDAO.saveOrUpdate(category);
-            category.setFullCode(parent.getId() + "/" + category.getId());
-        } else {
+            category.setFullCode(parent.getFullCode() + "/" + category.getId());
+        } else {//编辑
             category = categoryDAO.findById(form.getId());
             category.setName(form.getName());
             category.setDescription(form.getDescription());
