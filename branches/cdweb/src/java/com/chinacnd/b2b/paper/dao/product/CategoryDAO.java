@@ -29,6 +29,7 @@ public class CategoryDAO extends EntityDAO<Category> {
         Category parent = category.getParent();
         while (parent != null) {
             list.addAll(parent.getExtendAttributeList());
+            parent=parent.getParent();
         }
         return list;
     }
