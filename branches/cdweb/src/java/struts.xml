@@ -31,6 +31,8 @@
             <result name="__JSON_RESULT__" type="json">
                 <param name="root">__JSON_ROOT__</param>
                 <param name="excludeNullProperties">true</param>
+                <param name="enableGZIP">true</param>
+                <param name="noCache">true</param>
             </result>
         </global-results>
     </package>
