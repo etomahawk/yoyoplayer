@@ -3,13 +3,13 @@
  *
  * @author shiyan.wu
  *
- *
+ * @param productId  商品ID
  */
 function ProductAttrWin(productId){
 
     this.productId = productId;
     
-    //底部工具条按钮定义
+    //------------------底部工具条按钮定义-------------------------
     var btnOk = new Ext.Button({
         text: '保存当前属性页',
         iconCls: 'confirm',
@@ -17,6 +17,8 @@ function ProductAttrWin(productId){
             var curTab = tabpnl.getActiveTab();
             if(curTab.getId() == '_product_core_attr_tab'){  //保存基本属性
                 this.saveCoreAttr();
+            }else if(curTab.getId() == '_product_extend_attr_tab'){
+                this.saveExtendAttr();
             }
         }).createDelegate(this)
     });
@@ -27,6 +29,8 @@ function ProductAttrWin(productId){
             //todo
         }
     });
+
+    //-------------------------------------------------------------
 
     //商品图片上传表单
     this.frmUpload = new Ext.FormPanel({
@@ -77,33 +81,67 @@ function ProductAttrWin(productId){
         items: [this.frmCoreAttr, this.frmUpload]
     });
 
+    this.frmExtendAttr = new Ext.FormPanel({
+        id: '_product_extend_attr_tab',
+        title: '扩展属性',
+        defaults: {
+            anchor: '98%'
+        },
+        labelWidth: 80,
+        labelAlign: "right",
+        bodyStyle: 'padding:5px 5px 5px 0',
+        defaultType: 'textfield',
+        items: [{  //必须有元素，否则切换回其他标签页会错误
+            name: "fuckext",
+            xtype: 'label'
+        }]
+    });
+
+    this.gridUomSetting = new SimpleGrid.Panel({
+        id: '_product_uom_setting_tab',
+        title: '计量单位',
+        editor: true,
+        region: 'center',
+        layout: 'fit',
+        notPaging: true,
+        autoWidth: true,
+        cm: [
+            {header: '单位编码', dataIndex: 'code', width:120},
+            {header: '单位名称', dataIndex: 'name', width:120},
+            {header: '是否有效', dataIndex: 'enabled', width:60, renderer: function(val){
+	    	return val === true?'是':'否'
+             }},
+            {header: '换算比例',dataIndex: 'quotiety',
+                editor: new Ext.grid.GridEditor(new Ext.form.TextField({allowBlank: false}))
+            }
+        ],
+        recordFn: [
+           {name: 'id', type: 'int' },
+           {name: 'measureUnitId', type: 'int'},
+           {name: 'code'},
+           {name: 'name'},
+           {name: 'enabled', type: 'boolean'},
+           {name: 'mainUnit', type: 'boolean'},
+           {name: 'quotiety', type: 'float'}
+        ],
+        url: 'testjson/product_rate_list.json'
+    });
+
     var tabpnl = new Ext.TabPanel({
         height: 400,
         border: true,
         layoutOnTabChange: true,   //重要
         bbar: ['->', btnOk, '-', btnClose],
-        items: [this.pnlCoreAttr,{
-                id: '_product_extend_attr_tab',
-                title: '扩展属性',
-                xtype: 'form',
-                defaults: {
-                    anchor: '98%',
-                    labelWidth: 80,
-                    labelAlign: "right",
-                    bodyStyle: 'padding:5px 5px 5px 0'
-                },
-                defaultType: 'textfield',
-                items: [{  //必须有元素，否则切换回其他标签页会错误
-                    name: "fuckext",
-                    xtype: 'label'
-                }]
-        }]
+        items: [this.pnlCoreAttr, this.frmExtendAttr, this.gridUomSetting.grid]
 
     });
     tabpnl.activate(0);
     tabpnl.on("beforetabchange", (function(tbp, newTab, currentTab){
-        if(newTab.getId() == '_extend_tab' && !this.blExtendTabReady){
+        if(newTab.getId() == '_product_extend_attr_tab' && !this.blExtendTabReady){
             this.initExtendTab(newTab);
+        }else if(newTab.getId() == '_product_uom_setting_tab' && !this.blUomTabReady){
+            this.gridUomSetting.load();
+            this.blUomTabReady = true;
         }
     }).createDelegate(this));
 
@@ -188,6 +226,7 @@ ProductAttrWin.prototype = {
     initExtendTab: function(frm){
         Ext.Ajax.request({
            url: 'testjson/product_extend_attribute.json',
+           //url: 'product/product-list-extend-attributes',
            method: 'GET',
            params: 'id='+this.productId,
            success: function(resp){
@@ -195,16 +234,17 @@ ProductAttrWin.prototype = {
                if(!objResp)
                    return;
 
-               //this.reset();    //重置所有表单元素
-               
-               if(typeof objResp == 'object' && objResp.indexOf != undefined){
-                   for(var ia=0; ia<objResp.length; ia++){
-                       var kk = objResp[ia];
+               if(typeof objResp == 'object'){
+                   var _fields = objResp.list;   //扩展属性元素数组
+                   for(var ia=0; ia<_fields.length; ia++){
+                       var kk = _fields[ia];
                        if(typeof kk == 'object'){
                            frm.add({
-                              name: "extendValueList["+ia+"]",
-	                      fieldLabel: kk['name'],
-                              value: kk['value']
+                              name: 'extendAttrField_'+kk['id'],
+	                      fieldLabel: kk['attributeLabel'],
+                              value: kk['attributeValue'],
+                              extendAttributeId: kk['extendAttributeId'],
+                              extendAttributeValueId: kk['id']
                            });
                        }
                    }
@@ -216,6 +256,10 @@ ProductAttrWin.prototype = {
         });
     },
 
+    /**
+     * 保存基本属性
+     *
+     */
     saveCoreAttr: function(){
         this.frmCoreAttr.getForm().submit({
             url: this.action_save_core_attr,
@@ -238,6 +282,41 @@ ProductAttrWin.prototype = {
                     });
                 }
             }
+        });
+    },
+
+    /**
+     * 保存扩展属性
+     *
+     */
+    saveExtendAttr: function(){
+        var frm = this.frmExtendAttr;
+
+        //将表单中所有的输入框组装成json对象
+        var arr = [];
+        var frmFields = frm.findBy(function(cmp){
+            return cmp.name.indexOf('extendAttrField_') >= 0
+        });
+        if(frmFields && frmFields.length>0){
+            for(var ii=0;ii<frmFields.length;ii++){
+                var kk = frmFields[ii];
+                arr.push({
+                   extendAttributeId: kk.extendAttributeId,
+                   value: kk.getValue(),
+                   id: kk.extendAttributeValueId
+                });
+            }
+        }
+        var saveData = {productId: this.productId, list: arr};
+
+        Ext.Ajax.request({
+           url: 'testjson/get_parameters.jsp',
+           //url: 'product/product-list-extend-attributes',
+           method: 'POST',
+           success: function(resp){
+           },
+           scope: this,
+           jsonData: saveData
         });
     },
 

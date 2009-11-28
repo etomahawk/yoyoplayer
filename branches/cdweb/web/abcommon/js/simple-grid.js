@@ -22,7 +22,6 @@ SimpleGrid.Panel = function(options){
         options = [];
 
     var _url = options['url'];
-    //this._originalUrl = _url;
     var _width = options['width'];
     var _pageSize = options['pageSize'] || Constants.psize;
     this.pageSize = _pageSize;
@@ -41,18 +40,21 @@ SimpleGrid.Panel = function(options){
     });
     _store._originalUrl = _url;   //保存最初的URL
 
-    this.pagingBar = new Ext.PagingToolbar({
-        pageSize: _pageSize,
-        store: _store,
-        displayInfo: true,
-        displayMsg: options['displayMsg'] || '当前记录：{0} 至 {1} 合计：{2}',
-        emptyMsg: options['emptyMsg'] || "没有符合条件的查询"
-    });
+    if(!options['notPaging']){
+        this.pagingBar = new Ext.PagingToolbar({
+            pageSize: _pageSize,
+            store: _store,
+            displayInfo: true,
+            displayMsg: options['displayMsg'] || '当前记录：{0} 至 {1} 合计：{2}',
+            emptyMsg: options['emptyMsg'] || "没有符合条件的查询"
+        });
+    }
 
     var gridConfig = {
         loadMask: {
             msg: '数据加载中...'
         },
+        title: options['title'] || '',
         renderTo: options['renderTo'],
         iconCls: 'icon-grid',
         columns: options['cm'],
@@ -63,7 +65,7 @@ SimpleGrid.Panel = function(options){
         height: options['height'] || Ext.get('content-panel').getHeight()-25,
         autoExpandColumn: options['autoExpandColumn'] || false,
         tbar: options['tbar'] || false,
-        bbar: this.pagingBar
+        bbar: this.pagingBar || false
     };
 
     var extra = {};
@@ -75,6 +77,8 @@ SimpleGrid.Panel = function(options){
         extra['autoWidth'] = true;
     if(options['sm'])
         extra['sm'] = options['sm'];
+    if(options['id'])
+        extra['id'] = options['id'];
     Ext.apply(gridConfig, extra);
 
     if(options['editor'] === true){

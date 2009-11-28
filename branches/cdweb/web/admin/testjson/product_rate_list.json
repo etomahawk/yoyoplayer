@@ -1,0 +1,6 @@
+{"list":[
+     {"id":11,"code":"001","name":"吨","mainUnit":true,"measureUnitId":1,"enabled":true,"quotiety":"1.0"},
+     {"id":12,"code":"002","name":"件","mainUnit":false,"measureUnitId":2,"enabled":true,"quotiety":"100.0"},
+     {"id":13,"code":"003","name":"令","mainUnit":false,"measureUnitId":3,"enabled":true,"quotiety":"100.0"},
+     {"id":14,"code":"004","name":"张","mainUnit":false,"measureUnitId":4,"enabled":true,"quotiety":"30.0"}
+ ],"totalSize":4,"success":true}

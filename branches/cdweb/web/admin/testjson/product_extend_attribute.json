@@ -1,7 +1,9 @@
-[
-  {"name":"打印类型","value":"001"},
-  {"name":"产品规格","value":"782*1092"},
-  {"name":"产品包装","value":"900"},
-  {"name":"建议BCS采购价含税","value":"600"},
-  {"name":"建议BCS零售价含税","value":"800"}
+{
+list:[
+  {"id":11,"extendAttributeId":1,"extendAttributeName":"打印类型","attributeValue":"001"},
+  {"id":12,"extendAttributeId":2,"extendAttributeName":"产品规格","attributeValue":"782*1092"},
+  {"id":13,"extendAttributeId":3,"extendAttributeName":"产品包装","attributeValue":"牛皮"},
+  {"id":14,"extendAttributeId":4,"extendAttributeName":"BCS采购价","attributeValue":"600"},
+  {"id":15,"extendAttributeId":5,"extendAttributeName":"BCS零售价","attributeValue":"800"}
 ]
+}
