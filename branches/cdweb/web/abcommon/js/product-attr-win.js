@@ -97,6 +97,7 @@ function ProductAttrWin(productId){
         }]
     });
 
+    var sm = new Ext.grid.CheckboxSelectionModel();
     this.gridUomSetting = new SimpleGrid.Panel({
         id: '_product_uom_setting_tab',
         title: '计量单位',
@@ -105,9 +106,10 @@ function ProductAttrWin(productId){
         layout: 'fit',
         notPaging: true,
         autoWidth: true,
+        sm: sm,
         cm: [
-            {header: '单位编码', dataIndex: 'code', width:120},
-            {header: '单位名称', dataIndex: 'name', width:120},
+             sm,
+            {header: '单位名称', dataIndex: 'measureUnitName', width:100},
             {header: '是否有效', dataIndex: 'enabled', width:60, renderer: function(val){
 	    	return val === true?'是':'否'
              }},
@@ -118,8 +120,7 @@ function ProductAttrWin(productId){
         recordFn: [
            {name: 'id', type: 'int' },
            {name: 'measureUnitId', type: 'int'},
-           {name: 'code'},
-           {name: 'name'},
+           {name: 'measureUnitName'},
            {name: 'enabled', type: 'boolean'},
            {name: 'mainUnit', type: 'boolean'},
            {name: 'quotiety', type: 'float'}
@@ -225,8 +226,8 @@ ProductAttrWin.prototype = {
      */
     initExtendTab: function(frm){
         Ext.Ajax.request({
-           url: 'testjson/product_extend_attribute.json',
-           //url: 'product/product-list-extend-attributes',
+           //url: 'testjson/product_extend_attribute.json',
+           url: 'product/product-list-extend-attributes',
            method: 'GET',
            params: 'id='+this.productId,
            success: function(resp){
@@ -240,11 +241,10 @@ ProductAttrWin.prototype = {
                        var kk = _fields[ia];
                        if(typeof kk == 'object'){
                            frm.add({
-                              name: 'extendAttrField_'+kk['id'],
+                              name: 'extendAttrField_'+ia,
 	                      fieldLabel: kk['attributeLabel'],
-                              value: kk['attributeValue'],
-                              extendAttributeId: kk['extendAttributeId'],
-                              extendAttributeValueId: kk['id']
+                              value: kk['attributeValue'] || '',
+                              extendAttributeId: kk['extendAttributeId']
                            });
                        }
                    }
@@ -302,21 +302,36 @@ ProductAttrWin.prototype = {
                 var kk = frmFields[ii];
                 arr.push({
                    extendAttributeId: kk.extendAttributeId,
-                   value: kk.getValue(),
-                   id: kk.extendAttributeValueId
+                   attributeValue: kk.getValue()
                 });
             }
         }
-        var saveData = {productId: this.productId, list: arr};
+        var saveData = {productId: this.productId, extendAttributeValues: arr};
 
         Ext.Ajax.request({
-           url: 'testjson/get_parameters.jsp',
-           //url: 'product/product-list-extend-attributes',
-           method: 'POST',
-           success: function(resp){
-           },
-           scope: this,
-           jsonData: saveData
+            //url: 'testjson/get_parameters.jsp',
+            url: 'product/product-save-extend-attributes',
+            method: 'POST',
+            success: function(resp){
+                var respText = Ext.util.JSON.decode(resp.responseText);
+                if(!respText)
+                    return;
+                if(respText.success === true){
+                    Ext.Msg.show({
+                        title: '系统消息',
+                        msg: '保存成功!',
+                        buttons: {ok:'返回'}
+                    });
+                }else{
+                    Ext.Msg.show({
+                        title: '系统消息',
+                        msg: '保存失败! '+ (respText.message || ''),
+                        buttons: {ok:'返回'},
+                        icon : Ext.Msg.ERROR
+                    });
+                }
+            },
+            jsonData: saveData
         });
     },
 
