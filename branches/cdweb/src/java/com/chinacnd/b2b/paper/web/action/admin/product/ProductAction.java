@@ -201,6 +201,10 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
         this.extendAttributeValues = extendAttributeValues;
     }
 
+    public void setProductUnitSettings(List<ProductUnitSettingForm> productUnitSettings) {
+        this.productUnitSettings = productUnitSettings;
+    }
+
     public void setProductId(Long productId) {
         this.productId = productId;
     }
