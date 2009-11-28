@@ -367,27 +367,9 @@ ProductAttrWin.prototype = {
     },
 
     saveUom: function(){
-
-        //获取选中的记录
-        /*
-        var sels = this.gridUomSetting.grid.getSelectionModel().getSelections();
-        if(sels.length==0){
-            Ext.Msg.alert('系统消息', '请选择需要设置的计量单位!');
-            return;
-        }*/
-
         var sels = this.gridUomSetting.grid.getStore().getRange();
         
         var arr = [];
-        /*
-        Ext.each(sels, function(item){
-           arr.push({
-              measureUnitId: item.get('measureUnitId'),
-              mainUnit: item.get('mainUnit'),
-              quotiety: item.get('quotiety'),
-              enabled: item.get('enabled')
-           });
-        });*/
         for(var ii=0;ii<sels.length;ii++){
            var sel = sels[ii];
            var uos = {
