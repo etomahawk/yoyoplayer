@@ -20,8 +20,4 @@ public class AdminUserDAO extends EntityDAO<AdminUser> {
         query.addParameter("username", username).addParameter("password", MD5.digest(password));
         return findUniqueResult(query);
     }
-
-    public void saveAdminUser(AdminUser adminUser) {
-        this.saveOrUpdate(adminUser);
-    }
 }

@@ -23,9 +23,4 @@ public class AdminUserService {
         return adminUserDAO.login(username, password);
 
     }
-
-    @Transactional
-    public void saveAdminUser(AdminUser user) {
-        adminUserDAO.saveAdminUser(user);
-    }
 }

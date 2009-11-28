@@ -38,16 +38,4 @@ public class ExtendAttributeDAO extends EntityDAO<ExtendAttribute> {
         c.eq("code", code);
         return findByCriteria(c).size() > 0;
     }
-
-    public void saveOrUpdate(ExtendAttribute extendAttribute) {
-        super.saveOrUpdate(extendAttribute);
-    }
-
-    public void deleteById(Long id) {
-        super.deleteById(id);
-    }
-
-    public ExtendAttribute findById(Long id) {
-        return get(id);
-    }
 }

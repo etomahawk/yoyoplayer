@@ -12,8 +12,4 @@ import com.chinacnd.framework.db.EntityDAO;
  * @author Hadeslee
  */
 public class ProductUnitSettingDAO extends EntityDAO<ProductUnitSetting> {
-
-    public ProductUnitSetting findById(Long id) {
-        return super.get(id);
-    }
 }

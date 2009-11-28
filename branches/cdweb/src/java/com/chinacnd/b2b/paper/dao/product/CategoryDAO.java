@@ -77,18 +77,6 @@ public class CategoryDAO extends EntityDAO<Category> {
         return findByNamedQuery(nq);
     }
 
-    public void deleteById(Long id) {
-        super.deleteById(id);
-    }
-
-    public void delete(Category category) {
-        super.delete(category);
-    }
-
-    public void saveOrUpdate(Category category) {
-        super.saveOrUpdate(category);
-    }
-
     public boolean checkCodeExists(String code) {
         Criteria<Category> c = Criteria.of(Category.class);
         c.eq("code", code);

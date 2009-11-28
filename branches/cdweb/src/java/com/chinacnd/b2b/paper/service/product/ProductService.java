@@ -107,6 +107,10 @@ public class ProductService {
                     mainUnitCount++;
                 }
                 list.add(pu);
+            } else {//如果没有启用，并且又有记录，则删之
+                if (form.getId() != null && form.getId() > 0) {
+                    productUnitSettingDAO.deleteById(form.getId());
+                }
             }
         }
         //如果主单位不等于一个，则抛出异常

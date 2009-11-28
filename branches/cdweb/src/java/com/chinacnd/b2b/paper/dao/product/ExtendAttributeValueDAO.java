@@ -12,12 +12,4 @@ import com.chinacnd.framework.db.EntityDAO;
  * @author Hadeslee
  */
 public class ExtendAttributeValueDAO extends EntityDAO<ExtendAttributeValue> {
-
-    public ExtendAttributeValue findById(Long id) {
-        return super.get(id);
-    }
-
-    public void saveOrUpdate(ExtendAttributeValue value) {
-        super.saveOrUpdate(value);
-    }
 }

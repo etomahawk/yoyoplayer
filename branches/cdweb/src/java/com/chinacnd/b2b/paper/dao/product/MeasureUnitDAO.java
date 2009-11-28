@@ -21,18 +21,6 @@ public class MeasureUnitDAO extends EntityDAO<MeasureUnit> {
         updateByHQL("update MeasureUnit mu set mu.benchmark=false");
     }
 
-    public void saveOrUpdate(MeasureUnit mu) {
-        super.saveOrUpdate(mu);
-    }
-
-    public void deleteById(Long id) {
-        super.deleteById(id);
-    }
-
-    public MeasureUnit findById(Long id) {
-        return get(id);
-    }
-
     public List<MeasureUnit> listEnabled(Page page, OrderBy orderBy) {
         Criteria<MeasureUnit> c = Criteria.of(MeasureUnit.class);
         c.eq("enabled", true);

@@ -39,12 +39,4 @@ public class ProductDAO extends EntityDAO<Product> {
         }
         return findByCriteria(c, page);
     }
-
-    public Product findById(Long id) {
-        return get(id);
-    }
-
-    public void saveOrUpdate(Product product) {
-        super.saveOrUpdate(product);
-    }
 }

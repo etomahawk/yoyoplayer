@@ -6,6 +6,7 @@ package com.chinacnd.b2b.paper.service;
 
 import com.chinacnd.b2b.paper.entities.user.AdminUser;
 import com.chinacnd.b2b.paper.service.user.AdminUserService;
+import com.chinacnd.framework.db.DataAccess;
 import com.chinacnd.framework.util.MD5;
 import com.chinacnd.integration.test.BaseTest;
 import javax.annotation.Resource;
@@ -19,6 +20,8 @@ public class LoginServiceTest extends BaseTest {
 
     @Resource
     private AdminUserService loginService;
+    @Resource
+    private DataAccess dataAccess;
 
     @Test
     public void testLogin() {
@@ -26,7 +29,7 @@ public class LoginServiceTest extends BaseTest {
         user.setUsername("hadeslee");
         user.setFullname("千里冰封");
         user.setPassword(MD5.digest("a12345"));
-        loginService.saveAdminUser(user);
+        dataAccess.save(user);
         Long id = user.getId();
         assertNotNull(id);
         AdminUser login = loginService.login("hadeslee", "a12345");

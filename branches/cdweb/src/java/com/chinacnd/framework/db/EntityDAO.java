@@ -26,12 +26,16 @@ public abstract class EntityDAO<T extends IdEntity> {
         dataAccess.update(entity);
     }
 
-    protected void saveOrUpdate(T entity) {
+    public void saveOrUpdate(T entity) {
         dataAccess.saveOrUpdate(entity);
     }
 
     protected void save(Object entity) {
         dataAccess.save(entity);
+    }
+
+    public T findById(Serializable id) {
+        return get(id);
     }
 
     protected T get(Serializable id) {
@@ -90,11 +94,11 @@ public abstract class EntityDAO<T extends IdEntity> {
         return dataAccess.findAll(entityClass());
     }
 
-    protected void deleteById(Serializable id) {
+    public void deleteById(Serializable id) {
         dataAccess.delete(id, entityClass());
     }
 
-    protected void delete(T t) {
+    public void delete(T t) {
         dataAccess.delete(t);
     }
 
