@@ -30,6 +30,10 @@ public class ExtendAttributeValueJson {
         return value.getId();
     }
 
+    public String getAttributeLabel() {
+        return value.getAttribute().getName();
+    }
+
     public String getAttributeValue() {
         return value.getAttributeValue();
     }

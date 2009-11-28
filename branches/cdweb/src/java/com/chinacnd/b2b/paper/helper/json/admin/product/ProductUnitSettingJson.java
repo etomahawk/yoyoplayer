@@ -36,6 +36,10 @@ public class ProductUnitSettingJson {
         return productUnitSetting.getId();
     }
 
+    public String getMeasureUnitName() {
+        return productUnitSetting.getUnit().getName();
+    }
+
     public boolean isMainUnit() {
         return productUnitSetting.isMainUnit();
     }
