@@ -160,14 +160,15 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
 
     @Action(value = "product-save-paper-base-attributes")
     public String savePaperBaseAttributes() {
-        productService.saveCoreAttributeOfPaper(paper);
+        System.out.println("xxx " + getPaper().getDescription());
+        productService.saveCoreAttributeOfPaper(getPaper());
         setJsonObject(new OperationResultJson());
         return JSON_RESULT;
     }
 
     @Action(value = "product-save-pulp-base-attributes")
     public String savePulpBaseAttributes() {
-        productService.saveCoreAttributeOfPulp(pulp);
+        productService.saveCoreAttributeOfPulp(getPulp());
         setJsonObject(new OperationResultJson());
         return JSON_RESULT;
     }
@@ -205,5 +206,13 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
 
     public ProductForm getModel() {
         return form;
+    }
+    
+    public PaperForm getPaper() {
+        return paper;
+    }
+    
+    public PulpForm getPulp() {
+        return pulp;
     }
 }

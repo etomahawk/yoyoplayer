@@ -1,7 +1,7 @@
 
 Ext.onReady(function(){
 
-    var productAttrWin = new ProductAttrWin();
+    
 
     //---------------------左边的商品分类树------------------------------------
     var pnlProductCatTree = new CdForm.ProductCatTree();
@@ -31,7 +31,11 @@ Ext.onReady(function(){
         text: '修改',
         iconCls: 'edit',
         handler: function() {
-            productAttrWin.show();
+            var sel = gridProduct.getSelectionForEdit();
+            if(sel === false)
+                return;
+            var attrWin = new ProductAttrWin(sel.get('id'));
+            attrWin.show();
         }
     });
     var btnChangeCat = new Ext.Button({
@@ -69,7 +73,8 @@ Ext.onReady(function(){
                     if(!respText)
                         return;
                     if(respText.success === true){
-                        CdForm.ProductCatTreeSelector.show(respText.path, productId, function(){
+                        var treeSelector = new CdForm.ProductCatTreeSelector();
+                        treeSelector.show(respText.path, productId, function(){
                             gridProduct.load();
                         });
                     }

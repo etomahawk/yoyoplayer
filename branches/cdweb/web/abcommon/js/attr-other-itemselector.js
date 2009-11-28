@@ -81,7 +81,7 @@ function AttrOtherItemSelector(catId, catName, successFn){
         autoScroll: true,
         tbar: ['名称', txQtitle, '-', btnSearch],
         bbar: new Ext.PagingToolbar({
-            pageSize: Constants.psize,
+            pageSize: 10,
             store: this.fpStore,
             displayInfo: true,
             displayMsg: '合计：{2}',

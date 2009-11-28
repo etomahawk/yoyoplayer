@@ -375,87 +375,82 @@ CdForm.ProductCatTree.prototype = {
 /**
  * 商品分类树的选择窗口
  *
- * 单例，关闭窗体时隐藏
  */
-CdForm.ProductCatTreeSelector = {
+CdForm.ProductCatTreeSelector = function(){
 
-    /**
-     * 创建一个商品分类树的选择窗口
-     *
-     * private function   为保证单例模式，不允许外部对象调用
-     *
-     */
-    _create: function(){
-        this.tree = new CdForm.ProductCatTree({height: 300}, true).tree;
-        this.tree.on('click', (function(tnode, evt){
-            this.selN = tnode;
-        }).createDelegate(this));
-        
-        this.win = new Ext.Window({
-            title: '选择商品分类',
-            autoWidth: true,
-            autoHeight: true,
-            resizable: false,
-            modal: true,
-            closeAction: 'hide',
-            items: [this.tree],
-            el: 'ext-modal-dialog-win',   //用主页面上一个DOM元素来弹出窗口
-            buttons:[{
-               text: '保存',
-               handler: (function(){
-                    if(!this.selN)
-                        return;
-                    if(this.selN.getDepth()>1){  //根结点和第一级结点不能作为商品分类
-                        Ext.Msg.show({
-                            title: '系统提示',
-                            msg: '确定要将商品分类修改为：'+this.selN.text+'？',
-                            buttons: {
-                                yes:'确定',
-                                no:'取消'
-                            },
-                            fn: function(btnId){
-                                if(btnId == 'yes'){
-                                    Ext.Ajax.request({
-                                        url: 'product/product-change-category',
-                                        method: 'GET',
-                                        params: 'id='+this.productId+'&categoryId='+this.selN.id,
-                                        success: function(resp){
-                                            var respText = Ext.util.JSON.decode(resp.responseText);
-                                            if(!respText)
-                                                return;
-                                            if(respText.success === true){
-                                                Ext.Msg.show({
-                                                    title: '系统消息',
-                                                    msg: '修改成功!',
-                                                    buttons: {
-                                                        ok:'返回'
-                                                    },
-                                                    fn: this.successFn || false
-                                                });
+    this.tree = new CdForm.ProductCatTree({height: 300}, true).tree;
+    this.tree.on('click', (function(tnode){
+        this.selN = tnode;  //设置当前选中的商品分类
+    }).createDelegate(this));
+    
+    this.win = new Ext.Window({
+        title: '选择商品分类',
+        autoWidth: true,
+        autoHeight: true,
+        resizable: false,
+        modal: true,
+        items: [this.tree],
+        buttons:[{
+            text: '保存',
+            handler: (function(){
+                if(!this.selN)
+                    return;
+                
+                if(this.selN.getDepth()>1){  //根结点和第一级结点不能作为商品分类
+                    Ext.Msg.show({
+                        title: '系统提示',
+                        msg: '确定要将商品分类修改为：'+this.selN.text+'？',
+                        buttons: {yes:'确定', no:'取消'},
+                        fn: function(btnId){
+                            if(btnId == 'yes'){
+                                Ext.Ajax.request({
+                                    url: 'product/product-change-category',
+                                    method: 'GET',
+                                    params: 'id='+this.productId+'&categoryId='+this.selN.id,
+                                    success: function(resp){
+                                        var respText = Ext.util.JSON.decode(resp.responseText);
+                                        if(!respText)
+                                            return;
+                                        if(respText.success === true){
+                                            Ext.Msg.show({
+                                                title: '系统消息',
+                                                msg: '修改成功!',
+                                                buttons: {ok:'返回'},
+                                                fn: this.successFn || false
+                                            });
 
-                                                this.hide();   //保存成功后隐藏这个窗体
-                                            }else{
-                                                Ext.Msg.show({
-                                                    title: '系统消息',
-                                                    msg: '修改失败! '+ (respText.message || ''),
-                                                    buttons: {
-                                                        ok:'返回'
-                                                    },
-                                                    icon : Ext.Msg.ERROR
-                                                });
-                                            }
-                                        },
-                                        scope: this
-                                    });
-                                }
-                            },
-                            scope: this,
-                            icon: Ext.MessageBox.QUESTION
-                        });
-                    }
-                }).createDelegate(this)
-            }]
-        });
+                                            this.close();   //保存成功后销毁这个窗体
+                                        }else{
+                                            Ext.Msg.show({
+                                                title: '系统消息',
+                                                msg: '修改失败! '+ (respText.message || ''),
+                                                buttons: {ok:'返回'},
+                                                icon : Ext.Msg.ERROR
+                                            });
+                                        }
+                                    },
+                                    scope: this
+                                });
+                            }
+                        },
+                        scope: this,
+                        icon: Ext.MessageBox.QUESTION
+                    });
+                }
+            }).createDelegate(this)
+        },{
+            text: '关闭',
+            handler: (function() {
+                this.close();
+            }).createDelegate(this)
+        }]
+    });
+}
+
+CdForm.ProductCatTreeSelector.prototype = {
+
+    close: function(){
+        this.win.close();
     },
 
     /**
@@ -466,20 +461,14 @@ CdForm.ProductCatTreeSelector = {
      * @param successFn   修改成功后的回调函数
      */
     show: function(expandPath, productId, successFn){
-
-        //注意，为保证全局变量的安全，这两个参数每次调用时都需要有值
+        
         if(!expandPath || expandPath.trim() == '')
             return;
         if(!productId)
             return;
         this.productId = productId;
         this.successFn = successFn;
-        this.originalCategoryPath = '/-1/' + expandPath;
-
-        if(this.hiddenTypeN){
-            //如果之前有隐藏过某个结点（纸张/纸浆），在初始化时再把它显示出来
-            this.hiddenTypeN.getUI().show();
-        }
+        this.originalCategoryPath = '/-1/' + expandPath;  //当前所属的商品分类的xpath
         
         var indexN = expandPath.indexOf('/');
         var idTypeN = null;     //当前商品类型的结点（纸张/纸浆）的ID
@@ -489,36 +478,24 @@ CdForm.ProductCatTreeSelector = {
             idTypeN = expandPath.substring(0, indexN);
         }
 
-        alert('idTypeN='+ idTypeN);
-
-        if(!this.blCreated){
-            this._create();
-            this.blCreated = true;  //设置已创建标志位
-        }
+        alert('当前商品类型的结点ID='+ idTypeN);
+        
         this.win.show(false, function(){
             var othis = this;  //创建一个闭包
-            
+
             this.tree.expandPath(this.originalCategoryPath, 'id', function(bSuccess, oLastNode){
                 if(bSuccess){
                     oLastNode.getUI().addClass('tree-node-highlight');
                     oLastNode.select();  //高亮选中当前类别
-                    
+
                     var typeN = othis.tree.getNodeById(idTypeN);  //当前商品类型的结点（纸张/纸浆）
                     var otherTypeN = typeN.nextSibling || typeN.previousSibling;
-                    alert(otherTypeN.text);
-                    if(otherTypeN){  //移除互斥的商品类型的结点
+                    alert('隐藏这个结点：' + otherTypeN.text);
+                    if(otherTypeN){  //隐藏互斥的商品类型的结点
                         otherTypeN.getUI().hide();
-                        othis.hiddenTypeN = otherTypeN;
                     }
                 }
             });
         }, this);
-    },
-
-    hide: function(){
-        this.win.hide();
     }
-};
-
-
-
+}
