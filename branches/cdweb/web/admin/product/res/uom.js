@@ -158,8 +158,8 @@ Ext.onReady(function(){
         renderTo: 'measure-unit-panel',
         sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
         cm: [
-            {header: '编码', dataIndex: 'code', width:120},
-            {header: '名称', dataIndex: 'name', width:120},
+            {header: '编码', dataIndex: 'code', width:120, sortable: true},
+            {header: '名称', dataIndex: 'name', width:120, sortable: true},
             {header: '基本单位', dataIndex: 'benchmark', width:80, renderer: function(val){
 	    	return val === true?'是':'否'
              }},

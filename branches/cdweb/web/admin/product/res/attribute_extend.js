@@ -169,12 +169,12 @@ Ext.onReady(function(){
         sm: sm,
         cm: [
             sm,
-            {header: '编码', dataIndex: 'code', width:120},
-            {header: '名称', dataIndex: 'name', width:120},
+            {header: '编码', dataIndex: 'code', width:120, sortable: true},
+            {header: '名称', dataIndex: 'name', width:120, sortable: true},
             {header: '类型', dataIndex: 'valueType', width:80, renderer: function(val){
                  return Constants.getValueByKey(val, Constants.ValueType);
-            }},
-            {header: '长度', dataIndex: 'maxLength', width:60},
+            }, sortable: true},
+            {header: '长度', dataIndex: 'maxLength', width:60, sortable: true},
             {header: '状态', dataIndex : 'enabled', width:60, renderer: function(val){
                  return Constants.getValueByKey(val, Constants.Enabled);
             }},

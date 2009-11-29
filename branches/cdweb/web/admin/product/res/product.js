@@ -109,14 +109,14 @@ Ext.onReady(function(){
         autoWidth: true,
         sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
         cm: [
-            {header: '网上编码', dataIndex: 'netCode', width:100},
-            {header: '产品编码', dataIndex: 'code', width:100},
-            {header: '产品全名', dataIndex: 'fullName', width:120},
-            {header: 'GTIN编码', dataIndex: 'gtinNumber', width:80},
-            {header: '供应商编码', dataIndex: 'supplierCode', width: 80},
-            {header: '供应商编号', dataIndex: 'supplierNumber', width: 80},
-            {header: '供应商名称', dataIndex: 'supplierName', width: 120},
-            {header: '最后更新日期', dataIndex: 'lastUpdateDate', width: 120}
+            {header: '网上编码', dataIndex: 'netCode', width:100, sortable: true},
+            {header: '产品编码', dataIndex: 'code', width:100, sortable: true},
+            {header: '产品全名', dataIndex: 'fullName', width:100, sortable: true},
+            {header: 'GTIN编码', dataIndex: 'gtinNumber', width:80, sortable: true},
+            {header: '供应商编码', dataIndex: 'supplierCode', width: 80, sortable: true},
+            {header: '供应商编号', dataIndex: 'supplierNumber', width: 80, sortable: true},
+            {header: '供应商名称', dataIndex: 'supplierName', width: 100, sortable: true},
+            {header: '最后更新日期', dataIndex: 'lastUpdateDate', width: 130, sortable: true}
         ],
         recordFn: [
           {name: 'id', type: 'int' },

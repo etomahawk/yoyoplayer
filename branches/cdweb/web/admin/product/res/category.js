@@ -156,8 +156,8 @@ Ext.onReady(function(){
         sm: sm,
         cm: [
             sm,
-            {header: '分类编码', dataIndex: 'code', width:120},
-            {header: '分类名称', dataIndex: 'name', width:120},
+            {header: '分类编码', dataIndex: 'code', width:120, sortable: true},
+            {header: '分类名称', dataIndex: 'name', width:120, sortable: true},
             {header: '扩展属性', dataIndex: 'hasExtendAttributes', width: 80, renderer: function(val){
                  return val == true? '是':'否';
             }}

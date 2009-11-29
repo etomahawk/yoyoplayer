@@ -29,7 +29,8 @@ function AttrOtherItemSelector(catId, catName, successFn){
             {name: 'id'},
             {name: 'code'},
             {name: 'name'}
-        ])
+        ]),
+        remoteSort: true
     });
 
     var txQtitle = new Ext.form.TextField({
@@ -126,8 +127,8 @@ function AttrOtherItemSelector(catId, catName, successFn){
         height: 300,
         ds: this.fpStore,
         columns: [
-            {header: "编码", dataIndex: 'code', width: 130},
-            {header: "名称", dataIndex: 'name', width: 130}
+            {header: "编码", dataIndex: 'code', width: 130, sortable: true},
+            {header: "名称", dataIndex: 'name', width: 130, sortable: true}
         ],
         sm: new Ext.grid.RowSelectionModel({
             singleSelect:true

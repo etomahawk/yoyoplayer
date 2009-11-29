@@ -56,6 +56,7 @@ Ext.onReady(function(){
           {name: 'description'},
           {name: 'attributeType'}
         ],
+        autoId: true,
         //url: 'testjson/attribute_basic_list.json',
         url: 'product/core-attribute',
         autoExpandColumn: 'description',
