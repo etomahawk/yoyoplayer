@@ -24,11 +24,21 @@ public class ExtendAttributeService {
     private ExtendAttributeDAO extendAttributeDAO;
 
     @Transactional(readOnly = true)
-    public List<ExtendAttribute> getExtendAttributesByName(ExtendAttributeForm form) {
+    public List<ExtendAttribute> getAllExtendAttributesByName(ExtendAttributeForm form) {
         String name = form.getName();
         Page page = Page.from(form);
         OrderBy orderBy = OrderBy.from(form);
-        List<ExtendAttribute> list = extendAttributeDAO.getExtendAttributesByName(name, page, orderBy);
+        List<ExtendAttribute> list = extendAttributeDAO.getAllExtendAttributesByName(name, page, orderBy);
+        form.setTotalSize(page.getTotalCount());
+        return list;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ExtendAttribute> getEnabledExtendAttributesByName(ExtendAttributeForm form) {
+        String name = form.getName();
+        Page page = Page.from(form);
+        OrderBy orderBy = OrderBy.from(form);
+        List<ExtendAttribute> list = extendAttributeDAO.getEnabledExtendAttributesByName(name, page, orderBy);
         form.setTotalSize(page.getTotalCount());
         return list;
     }

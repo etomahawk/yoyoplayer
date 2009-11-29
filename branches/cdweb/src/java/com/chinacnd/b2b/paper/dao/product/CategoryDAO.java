@@ -27,8 +27,13 @@ public class CategoryDAO extends EntityDAO<Category> {
         List<ExtendAttribute> list = new ArrayList<ExtendAttribute>();
         Category category = findById(categoryId);
         Category parent = category.getParent();
+        //只添加启用了的扩展属性，
         while (parent != null) {
-            list.addAll(parent.getExtendAttributeList());
+            for (ExtendAttribute extendAttribute : parent.getExtendAttributeList()) {
+                if (extendAttribute.isEnabled()) {
+                    list.add(extendAttribute);
+                }
+            }
             parent = parent.getParent();
         }
         return list;
@@ -36,7 +41,13 @@ public class CategoryDAO extends EntityDAO<Category> {
 
     public List<ExtendAttribute> getSelfExtendAttributes(Long categoryId) {
         Category category = findById(categoryId);
-        return category.getExtendAttributeList();
+        List<ExtendAttribute> extendAttributes = new ArrayList<ExtendAttribute>();
+        for (ExtendAttribute extendAttribute : category.getExtendAttributeList()) {
+            if (extendAttribute.isEnabled()) {
+                extendAttributes.add(extendAttribute);
+            }
+        }
+        return extendAttributes;
     }
 
     public List<ExtendAttribute> getAllExtendAttributes(Long categoryId) {

@@ -18,7 +18,18 @@ import java.util.List;
  */
 public class ExtendAttributeDAO extends EntityDAO<ExtendAttribute> {
 
-    public List<ExtendAttribute> getExtendAttributesByName(String name, Page page, OrderBy orderBy) {
+    public List<ExtendAttribute> getAllExtendAttributesByName(String name, Page page, OrderBy orderBy) {
+        Criteria<ExtendAttribute> c = Criteria.of(ExtendAttribute.class);
+        if (StringUtils.hasText(name)) {
+            c.like("name", name);
+        }
+        if (orderBy != null) {
+            c.orderBy(orderBy);
+        }
+        return findByCriteria(c, page);
+    }
+
+    public List<ExtendAttribute> getEnabledExtendAttributesByName(String name, Page page, OrderBy orderBy) {
         Criteria<ExtendAttribute> c = Criteria.of(ExtendAttribute.class);
         c.eq("enabled", true);
         if (StringUtils.hasText(name)) {

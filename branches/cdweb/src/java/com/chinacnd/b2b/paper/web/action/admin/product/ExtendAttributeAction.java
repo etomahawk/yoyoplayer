@@ -30,7 +30,7 @@ public class ExtendAttributeAction extends BaseAction implements ModelDriven<Ext
 
     @Action(value = "extend-attribute-list")
     public String list() {
-        List<ExtendAttribute> temp = extendAttributeService.getExtendAttributesByName(form);
+        List<ExtendAttribute> temp = extendAttributeService.getAllExtendAttributesByName(form);
         List<ExtendAttributeJson> jsons = new ArrayList<ExtendAttributeJson>();
         for (ExtendAttribute extendAttribute : temp) {
             jsons.add(new ExtendAttributeJson(extendAttribute));
