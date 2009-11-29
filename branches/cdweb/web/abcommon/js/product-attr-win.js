@@ -111,10 +111,13 @@ function ProductAttrWin(productId){
         displayField: 'text',
         readOnly:true
     });
-    comboMainUnit.on('select', function(_combo, _record){
+    comboMainUnit.on('select', function(_combo, _selRecord){
+        /*
         if(_combo.getValue() === true){
-            
-        }
+            this.gridUomSetting.eachRecord(function(_record){
+                
+            });
+        }*/
     });
     this.gridUomSetting = new SimpleGrid.Panel({
         id: '_product_uom_setting_tab',
@@ -351,8 +354,8 @@ ProductAttrWin.prototype = {
         var saveData = {productId: this.productId, extendAttributeValues: arr};
 
         Ext.Ajax.request({
-            url: 'testjson/get_parameters.jsp',
-            //url: 'product/product-save-extend-attributes',
+            //url: 'testjson/get_parameters.jsp',
+            url: 'product/product-save-extend-attributes',
             method: 'POST',
             success: function(resp){
                 var respText = Ext.util.JSON.decode(resp.responseText);

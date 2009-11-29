@@ -219,7 +219,7 @@ function AttrOtherItemSelector(catId, catName, successFn){
 }
 
 AttrOtherItemSelector.prototype = {
-
+        /*
 	addEvent: function(){
             this.eachBtnEl(function(el){
 	   	  el.on('click', (function(event){
@@ -236,6 +236,22 @@ AttrOtherItemSelector.prototype = {
 	   	  }).createDelegate(this));
 	   });
            
+        },*/
+
+        addEvent: function(){
+           this.eachBtn(function(btn){
+                 btn.on('click', (function(_btn){
+	   	       if(_btn.iconCls.indexOf('to-right-btn')>0){    // >
+	   	  	   this.addIf(this.fp.getSelectionModel().getSelected(), this.fp.getStore(), this.sfp.getStore());
+	   	       }else if(_btn.iconCls.indexOf('to-right-2-btn')>0){  // >>
+	   	  	   this.addIf(this.fp.getStore().getRange(), this.fp.getStore(), this.sfp.getStore());
+	   	       }else if(_btn.iconCls.indexOf('to-left-btn')>0){ // <
+	   	  	   this.remove(this.sfp.getSelectionModel().getSelected(), this.sfp.getStore());
+	   	       }else{ // <<
+	   	  	   this.remove(this.sfp.getStore().getRange(), this.sfp.getStore());
+	   	       }
+	   	  }).createDelegate(this));
+           });
         },
 
 	addIf: function(records, src, dest){

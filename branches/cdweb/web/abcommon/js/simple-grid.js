@@ -187,7 +187,12 @@ SimpleGrid.Panel.prototype = {
     },
 
     eachRecord: function(fn){
-        
+        var records = this.getStore().getRange();
+        if(records && records.length>0){
+            Ext.each(records, function(_record){
+                fn.call(this, _record);
+            }, this);
+        }
     }
     
 }
