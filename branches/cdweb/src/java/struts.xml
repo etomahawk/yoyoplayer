@@ -7,6 +7,7 @@
     <constant name="struts.action.excludePattern" value="/ShitServlet"/>
     <constant name="struts.enable.DynamicMethodInvocation" value="false" />
     <constant name="struts.multipart.maxSize" value="1024000"/><!--最大上传1M的图片-->
+    <constant name="struts.multipart.saveDir" value="D:/temp"/><!--临时目录-->
     <constant name="struts.convention.result.path" value="/" />
     <constant name="struts.convention.classes.reload" value="true" />
     <constant name="struts.devMode" value="true" />
@@ -14,6 +15,7 @@
     <constant name="struts.i18n.encoding" value="UTF-8"/>
     <constant name="struts.custom.i18n.resources" value="message"/>
     <constant name="struts.locale" value="zh-cn"/>
+    <constant name="com.chinacnd.allowed.images" value="gif,jpeg,jpg,png,bmp"/><!--可上传的图片后缀-->
     
     <package name="admin-default" extends="json-default">
         <interceptors>

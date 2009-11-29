@@ -22,9 +22,13 @@ import com.chinacnd.b2b.paper.helper.json.admin.product.ProductUnitSettingJson;
 import com.chinacnd.b2b.paper.helper.json.admin.product.PulpJson;
 import com.chinacnd.b2b.paper.service.product.ProductService;
 import com.chinacnd.framework.struts.BaseAction;
+import com.chinacnd.framework.struts.ResultType;
+import com.chinacnd.framework.util.CollectionUtils;
 import com.chinacnd.framework.util.FileUtils;
+import com.chinacnd.framework.util.StringUtils;
 import com.chinacnd.framework.util.UUIDUtils;
 import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.inject.Inject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +38,7 @@ import javax.annotation.Resource;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
+import org.apache.struts2.convention.annotation.Result;
 
 /**
  *
@@ -52,22 +57,27 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
     private File imgFile;//上传的图片文件
     private String fileName;//上传的文件名
     private String contentType;//内容格式
+    private Map<String, String> uploadJsonRoot;
+    private List<String> allowedImgs;//允许上传的文件后缀
 
-    @Action(value = "product-upload-image")
+    @Action(value = "product-upload-image", results = {
+        @Result(type = ResultType.json, name = "upload",
+        params = {"contentType", "text/html", "root", "uploadJsonRoot"})
+    })
     public String uploadImage() {
+        uploadJsonRoot = new HashMap<String, String>();
         String reason = checkFile();
         if (reason == null) {
             String url = saveFile();
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("thumbnailUrl", url);
-            setJsonMap(map);
+            uploadJsonRoot.put("thumbnailUrl", url);
+            uploadJsonRoot.put("success", "true");
+            uploadJsonRoot.put("timeout", "false");
         } else {
-            OperationResultJson json = new OperationResultJson();
-            json.setSuccess(false);
-            json.setMessage(reason);
-            setJsonObject(json);
+            uploadJsonRoot.put("success", "false");
+            uploadJsonRoot.put("timeout", "false");
+            uploadJsonRoot.put("message", reason);
         }
-        return JSON_RESULT;
+        return "upload";
     }
 
     /**
@@ -76,10 +86,17 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
      * @return 图片可访问URL
      */
     private String saveFile() {
+        log.info("fileName=" + fileName);
+        log.info("contentType=" + contentType);
         String path = ServletActionContext.getServletContext().getRealPath("/");
-        String url = "/" + UUIDUtils.uuid() + "." + FileUtils.getExtention(imgFile.getName());
+        String url = "/productImages/" + UUIDUtils.uuid() + "." + FileUtils.getExtention(fileName);
         FileUtils.copy(imgFile, path + url);
         return url;
+    }
+
+    @Inject(value = "com.chinacnd.allowed.images")
+    public void setAllowsImage(String s) {
+        allowedImgs = CollectionUtils.makeList(StringUtils.split(s, ","));
     }
 
     /**
@@ -90,6 +107,18 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
     private String checkFile() {
         if (imgFile == null) {
             return "上传的文件为空";
+        } else {
+            String ext = FileUtils.getExtention(fileName);
+            boolean find = false;
+            for (String s : allowedImgs) {
+                if (s.equalsIgnoreCase(ext)) {
+                    find = true;
+                    break;
+                }
+            }
+            if (find == false) {
+                return "上传的文件格式非法:" + ext;
+            }
         }
         return null;
     }
@@ -296,5 +325,9 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
 
     public void setImgFileFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public Map<String, String> getUploadJsonRoot() {
+        return uploadJsonRoot;
     }
 }
