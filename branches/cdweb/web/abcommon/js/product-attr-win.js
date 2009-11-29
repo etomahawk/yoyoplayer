@@ -39,26 +39,39 @@ function ProductAttrWin(productId){
         id: '_product_photo_upload_form',
         region: 'south',
         fileUpload: true,
+        url: 'product/product-upload-image',
+        //url: 'product/09_01.jsp',
         items: [{
             xtype: 'textfield',
-            name: "photo",
+            name: "imgFile",
+            //name: 'file',
 	    fieldLabel: "产品图片",
             inputType: "file",
             blankText:"请选择图片."
         }],
         buttons: [{
             text: '上传',
-            handler: function() {
-                /*
-                form.getForm().submit({
+            handler: (function() {
+                this.frmUpload.getForm().submit({
                     success: function(form, action){
-                        Ext.Msg.alert('信息', action.result.msg);
+                        var arr = this.frmCoreAttr.find('name', 'paper.thumbnailUrl');
+                        if(arr && arr.length==1){
+                            arr[0].setValue(action.result.thumbnailUrl);
+                        }
+                        
+                        Ext.Msg.alert('系统提示', '上传成功');
                     },
                     failure: function(){
-                        Ext.Msg.alert('错误', '失败');
-                    }
-                });*/
-            }
+                        Ext.Msg.alert('系统提示', '上传失败'+(action.result.message || ''));
+                    },
+                    scope: this
+                });
+            }).createDelegate(this)
+        },{
+           text: '查看图片',
+           handler: function(){
+               
+           }
         }]
     });
 

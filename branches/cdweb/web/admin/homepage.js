@@ -11,6 +11,8 @@ Ext.onReady(function(){
     //设置全局监听器处理SESSION过期
     Ext.util.Observable.observeClass(Ext.data.Connection);
     Ext.data.Connection.on('requestcomplete', function(conn, resp, options){
+        if(!resp.getAllResponseHeaders)
+            return;
         var headers = resp.getAllResponseHeaders();
         if(headers && (headers.indexOf('Content-Type: application/json') >= 0 || headers.indexOf('Content-Type: text/json') >= 0)){
             var respText = Ext.util.JSON.decode(resp.responseText);
