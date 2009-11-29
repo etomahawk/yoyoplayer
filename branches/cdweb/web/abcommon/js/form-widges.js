@@ -37,7 +37,8 @@ CdForm.createCombo = function(options){
         triggerAction: 'all',
         editable: false,
         allowBlank: false,
-        mode: 'local'
+        mode: 'local',
+        disabled: options['disabled'] || false
     }
 }
 

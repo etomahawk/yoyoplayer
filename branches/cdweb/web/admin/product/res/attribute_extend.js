@@ -87,7 +87,7 @@ Ext.onReady(function(){
                  },{
                    fieldLabel: '编码',
                    name: 'code',
-                   disabled: true,
+                   disabled: true,    //编码不允许修改
                    width: 150
                  },{
                    fieldLabel: '名称',
@@ -100,11 +100,12 @@ Ext.onReady(function(){
                       id: 'x_edit_attr_other_valueType',
                       hiddenName: 'valueType',
                       fieldLabel: '类型',
-                      data: Constants.ValueType
+                      data: Constants.ValueType,
+                      disabled: true             //类型不允许修改
                  }),{
                       fieldLabel:'长度',
                       name: 'maxLength',
-                      vtype: 'maxlength',
+                      disabled: true,    //长度不允许修改
                       width: 150
                  },{
                       fieldLabel:'默认值',
