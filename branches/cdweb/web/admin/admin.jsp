@@ -31,6 +31,7 @@
         <script type="text/javascript" src="Portlet.js"></script>--%>
         <script type="text/javascript">
             Ext.BLANK_IMAGE_URL = "<s:url value='/abcommon/resources/images/default/s.gif' />";
+            var contextPath = <s:url value='/'/>;
             var Constants = {
                 adminUserName: "${pageScope.adminUserName}",   //登陆的管理员名称
                 psize: 20,

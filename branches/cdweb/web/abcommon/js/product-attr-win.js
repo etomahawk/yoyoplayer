@@ -38,13 +38,12 @@ function ProductAttrWin(productId){
     this.frmUpload = new Ext.FormPanel({
         id: '_product_photo_upload_form',
         region: 'south',
+        border: false,
         fileUpload: true,
         url: 'product/product-upload-image',
-        //url: 'product/09_01.jsp',
         items: [{
             xtype: 'textfield',
             name: "imgFile",
-            //name: 'file',
 	    fieldLabel: "产品图片",
             inputType: "file",
             blankText:"请选择图片."
@@ -53,13 +52,23 @@ function ProductAttrWin(productId){
             text: '上传',
             handler: (function() {
                 this.frmUpload.getForm().submit({
+                    waitTitle: '请稍候',
+                    waitMsg: '正在上传图片,请稍候...',
                     success: function(form, action){
                         var arr = this.frmCoreAttr.find('name', 'paper.thumbnailUrl');
                         if(arr && arr.length==1){
                             arr[0].setValue(action.result.thumbnailUrl);
                         }
-                        
-                        Ext.Msg.alert('系统提示', '上传成功');
+
+                        Ext.Msg.show({
+                            title: '系统消息',
+                            msg: '上传成功!',
+                            buttons: {ok:'返回'},
+                            fn: function(){
+                                this.refreshPhoto();  //刷新产品图片
+                            },
+                            scope: this  //作用域为AttrOtherItemSelector类的对象
+                        });
                     },
                     failure: function(){
                         Ext.Msg.alert('系统提示', '上传失败'+(action.result.message || ''));
@@ -67,11 +76,6 @@ function ProductAttrWin(productId){
                     scope: this
                 });
             }).createDelegate(this)
-        },{
-           text: '查看图片',
-           handler: function(){
-               
-           }
         }]
     });
 
@@ -79,8 +83,33 @@ function ProductAttrWin(productId){
     this.frmCoreAttr = new Ext.FormPanel({
         id: '_product_core_attr_form',
         region: 'center',
+        labelWidth: 80,
+        labelAlign: "right",
+        bodyStyle: 'padding:5px 5px 5px 0',
         defaultType: 'textfield',
+        border: false,
         items: []
+    });
+    //显示商品图片的面板
+    this.pnlPhoto = new Ext.Panel({
+        region: 'east',
+        border: false,
+        items: [{
+          id: '_product_photo_box',
+          xtype: 'box',
+          height:100,
+          width: 100,
+          autoEl: {
+              tag: 'img'
+          }
+        }]
+    });
+
+    this.pnlCoreAttr = new Ext.Panel({
+        layout: 'border',
+        region: 'center',
+        border: false,
+        items:[this.frmCoreAttr, this.pnlPhoto]
     });
 
     //基本属性标签页
@@ -93,7 +122,7 @@ function ProductAttrWin(productId){
             labelAlign: "right",
             bodyStyle: 'padding:5px 5px 5px 0'
         },
-        items: [this.frmCoreAttr, this.frmUpload]
+        items: [this.pnlCoreAttr, this.frmUpload]
     });
 
     this.frmExtendAttr = new Ext.FormPanel({
@@ -185,7 +214,7 @@ function ProductAttrWin(productId){
 
 
     var tabpnl = new Ext.TabPanel({
-        height: 400,
+        height: 340,
         border: true,
         layoutOnTabChange: true,   //重要
         bbar: ['->', btnOk, '-', btnClose],
@@ -272,6 +301,8 @@ ProductAttrWin.prototype = {
                             value: this.productId
                        });
                    }
+
+                   this.refreshPhoto();  //刷新产品图片
                    frm.doLayout();
                }
            },
@@ -461,6 +492,21 @@ ProductAttrWin.prototype = {
             },
             scope: this
         });
+    },
+
+    /**
+     * 刷新产品图片
+     *
+     */
+    refreshPhoto: function(){
+        var _src = 'http://sc.chinaz.biz/Files/pic/icon3/2737.jpg';
+        var arr = this.frmCoreAttr.find('name', 'paper.thumbnailUrl');
+        if(arr && arr.length==1){
+            if(arr[0].getValue() != '')
+                _src = contextPath+arr[0].getValue();
+        }
+        
+        Ext.getCmp('_product_photo_box').getEl().dom.src = _src;
     },
 
     reset: function(){
