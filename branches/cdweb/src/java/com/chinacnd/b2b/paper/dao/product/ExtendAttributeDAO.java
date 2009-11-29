@@ -41,11 +41,8 @@ public class ExtendAttributeDAO extends EntityDAO<ExtendAttribute> {
         return findByCriteria(c, page);
     }
 
-    public boolean checkCodeExists(Long id, String code) {
+    public boolean checkCodeExists(String code) {
         Criteria<ExtendAttribute> c = Criteria.of(ExtendAttribute.class);
-        if (id != null) {
-            c.ne("id", id);
-        }
         c.eq("code", code);
         return findByCriteria(c).size() > 0;
     }

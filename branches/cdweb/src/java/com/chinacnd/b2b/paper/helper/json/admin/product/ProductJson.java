@@ -6,6 +6,7 @@ package com.chinacnd.b2b.paper.helper.json.admin.product;
 
 import com.chinacnd.b2b.paper.entities.product.Product;
 import java.util.Date;
+import org.apache.struts2.json.annotations.JSON;
 
 /**
  *
@@ -38,7 +39,7 @@ public class ProductJson {
     public String getNetCode() {
         return product.getNetCode();
     }
-
+    @JSON(format="yyyy年MM月dd日HH:mm:ss")
     public Date getLastUpdateDate() {
         return product.getLastUpdateDate();
     }

@@ -56,17 +56,12 @@ public class ExtendAttributeAction extends BaseAction implements ModelDriven<Ext
     @Action(value = "extend-attribute-save")
     public String save() throws Exception {
         OperationResultJson operationResult = new OperationResultJson();
-        if (form.getMaxLength() <= 0) {
+        try {
+            extendAttributeService.save(form);
+        } catch (ServiceException ex) {
+            log.error(null, ex);
             operationResult.setSuccess(false);
-            operationResult.setMessage("属性长度只允许输入正整数");
-        } else {
-            try {
-                extendAttributeService.save(form);
-            } catch (ServiceException ex) {
-                log.error(null, ex);
-                operationResult.setSuccess(false);
-                operationResult.setMessage(ex.getMessage());
-            }
+            operationResult.setMessage(ex.getMessage());
         }
         setJsonObject(operationResult);
         return JSON_RESULT;

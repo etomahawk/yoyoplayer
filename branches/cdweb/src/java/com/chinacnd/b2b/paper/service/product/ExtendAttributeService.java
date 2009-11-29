@@ -45,11 +45,23 @@ public class ExtendAttributeService {
 
     @Transactional
     public void save(ExtendAttributeForm form) throws ServiceException {
-        boolean codeExists = extendAttributeDAO.checkCodeExists(form.getId(), form.getCode());
-        if (codeExists) {
-            throw new ServiceException("属性编码已经存在，请重新输入");
-        } else {
+        //表示新增
+        if (form.getId() == null || form.getId() <= 0) {
+            boolean codeExists = extendAttributeDAO.checkCodeExists(form.getCode());
+            if (codeExists) {
+                throw new ServiceException("属性编码已经存在，请重新输入");
+            }
+            if (form.getMaxLength() <= 0) {
+                throw new ServiceException("属性长度只允许输入正整数");
+            }
             extendAttributeDAO.saveOrUpdate(form.getExtendAttribute());
+        } else {//表示编辑
+            ExtendAttribute extendAttribute = findById(form.getId());
+            //只更新能编辑的，其它的都不更新
+            extendAttribute.setDefaultValue(form.getDefaultValue());
+            extendAttribute.setDescription(form.getDescription());
+            extendAttribute.setEnabled(form.isEnabled());
+            extendAttribute.setName(form.getName());
         }
     }
 

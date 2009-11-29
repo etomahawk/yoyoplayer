@@ -193,11 +193,12 @@ public class ProductService {
                     break;
                 }
             }
-            //如果没有找到相关的值，则添加一条空的进去
+            //如果没有找到相关的值，则添加一条带了默认值的进去
             if (find == false) {
                 ExtendAttributeValue value = new ExtendAttributeValue();
                 value.setAttribute(extendAttribute);
                 value.setProduct(product);
+                value.setAttributeValue(extendAttribute.getDefaultValue());
                 list.add(value);
             }
         }

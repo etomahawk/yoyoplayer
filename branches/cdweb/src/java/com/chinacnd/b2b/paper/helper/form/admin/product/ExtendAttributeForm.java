@@ -95,6 +95,4 @@ public class ExtendAttributeForm extends RequestRecordForm {
     public String getCode() {
         return extendAttribute.getCode();
     }
-
-   
 }
