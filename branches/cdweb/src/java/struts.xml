@@ -6,6 +6,7 @@
 <struts>
     <constant name="struts.action.excludePattern" value="/ShitServlet"/>
     <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.multipart.maxSize" value="1024000"/><!--最大上传1M的图片-->
     <constant name="struts.convention.result.path" value="/" />
     <constant name="struts.convention.classes.reload" value="true" />
     <constant name="struts.devMode" value="true" />

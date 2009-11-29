@@ -22,12 +22,16 @@ import com.chinacnd.b2b.paper.helper.json.admin.product.ProductUnitSettingJson;
 import com.chinacnd.b2b.paper.helper.json.admin.product.PulpJson;
 import com.chinacnd.b2b.paper.service.product.ProductService;
 import com.chinacnd.framework.struts.BaseAction;
+import com.chinacnd.framework.util.FileUtils;
+import com.chinacnd.framework.util.UUIDUtils;
 import com.opensymphony.xwork2.ModelDriven;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.InterceptorRef;
 
@@ -45,6 +49,50 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
     private List<ExtendAttributeValueForm> extendAttributeValues = new ArrayList<ExtendAttributeValueForm>();
     private List<ProductUnitSettingForm> productUnitSettings = new ArrayList<ProductUnitSettingForm>();
     private Long productId;//做为传值用
+    private File imgFile;//上传的图片文件
+    private String fileName;//上传的文件名
+    private String contentType;//内容格式
+
+    @Action(value = "product-upload-image")
+    public String uploadImage() {
+        String reason = checkFile();
+        if (reason == null) {
+            String url = saveFile();
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("thumbnailUrl", url);
+            setJsonMap(map);
+        } else {
+            OperationResultJson json = new OperationResultJson();
+            json.setSuccess(false);
+            json.setMessage(reason);
+            setJsonObject(json);
+        }
+        return JSON_RESULT;
+    }
+
+    /**
+     * 把上传过来的图片文件保存起来，并返回
+     * 对应的访问URL
+     * @return 图片可访问URL
+     */
+    private String saveFile() {
+        String path = ServletActionContext.getServletContext().getRealPath("/");
+        String url = "/" + UUIDUtils.uuid() + "." + FileUtils.getExtention(imgFile.getName());
+        FileUtils.copy(imgFile, path + url);
+        return url;
+    }
+
+    /**
+     * 检查文件是否合法
+     * 比如文件的后缀等等，因为文件格式很重要
+     * @return 错误信息，如果有的话
+     */
+    private String checkFile() {
+        if (imgFile == null) {
+            return "上传的文件为空";
+        }
+        return null;
+    }
 
     @Action(value = "product-list-measure-units")
     public String listProductMeasureUnits() {
@@ -236,5 +284,17 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
 
     public PulpForm getPulp() {
         return pulp;
+    }
+
+    public void setImgFile(File imgFile) {
+        this.imgFile = imgFile;
+    }
+
+    public void setImgFileContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public void setImgFileFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

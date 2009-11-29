@@ -3,7 +3,20 @@ package com.chinacnd.framework.util;
 import java.io.*;
 import java.io.InputStreamReader;
 
+/**
+ * TODO 此类要改造一下细节
+ * @author Hadeslee
+ */
 public class FileUtils {
+
+    public static String getExtention(String fileName) {
+        int index = fileName.lastIndexOf(".");
+        if (index != -1 && index < fileName.length() - 1) {
+            return fileName.substring(index + 1);
+        } else {
+            return "";
+        }
+    }
 
     public static void copy(String sourceFilePath, String targetFilePath) {
         try {
@@ -159,14 +172,14 @@ public class FileUtils {
             BufferedReader input = new BufferedReader(reader);
             File outputFile = new File(targetName);
             if (outputFile.exists()) {
-                if(overwrite){
+                if (overwrite) {
                     outputFile.delete();
-                }else{
+                } else {
                     return;
                 }
             }
             File parentFile = outputFile.getParentFile();
-            if (parentFile!=null && !parentFile.exists()) {
+            if (parentFile != null && !parentFile.exists()) {
                 parentFile.mkdirs();
             }
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(outputFile), outputEncode);
@@ -187,6 +200,6 @@ public class FileUtils {
     }
 
     public static String getEncodeName(String unpackEncode, String targetName) {
-        return targetName+"_"+unpackEncode;
+        return targetName + "_" + unpackEncode;
     }
 }
