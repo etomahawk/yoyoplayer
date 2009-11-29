@@ -27,9 +27,9 @@ function ProductAttrWin(productId){
     var btnClose = new Ext.Button({
         text: '关闭',
         iconCls: 'close',
-        handler: function() {
-            //todo
-        }
+        handler: (function() {
+            this.win.close();
+        }).createDelegate(this)
     });
 
     //-------------------------------------------------------------
@@ -171,7 +171,6 @@ function ProductAttrWin(productId){
         if(newTab.getId() == '_product_extend_attr_tab' && !this.blExtendTabReady){
             this.initExtendTab(newTab);
         }else if(newTab.getId() == '_product_uom_setting_tab' && !this.blUomTabReady){
-            this.gridUomSetting.getStore().removeAll();
             this.gridUomSetting.loadNotPaging({id: this.productId});
             this.blUomTabReady = true;
         }
@@ -189,6 +188,8 @@ function ProductAttrWin(productId){
         layout: 'fit'
     });
 }
+
+
 ProductAttrWin.prototype = {
 
     //显示窗口
@@ -366,6 +367,10 @@ ProductAttrWin.prototype = {
         });
     },
 
+    /**
+     * 保存计量单位
+     *
+     */
     saveUom: function(){
         var sels = this.gridUomSetting.grid.getStore().getRange();
         
@@ -388,6 +393,7 @@ ProductAttrWin.prototype = {
             //url: 'testjson/get_parameters.jsp',
             url: 'product/product-save-measure-units',
             method: 'POST',
+            jsonData: saveData,
             success: function(resp){
                 var respText = Ext.util.JSON.decode(resp.responseText);
                 if(!respText)
@@ -396,7 +402,12 @@ ProductAttrWin.prototype = {
                     Ext.Msg.show({
                         title: '系统消息',
                         msg: '保存成功!',
-                        buttons: {ok:'返回'}
+                        buttons: {ok:'返回'},
+                        fn: function(){
+                            //保存成功后重新加载grid保证新增的记录都有ID
+                            this.gridUomSetting.loadNotPaging({id: this.productId});
+                        },
+                        scope: this
                     });
                 }else{
                     Ext.Msg.show({
@@ -407,7 +418,7 @@ ProductAttrWin.prototype = {
                     });
                 }
             },
-            jsonData: saveData
+            scope: this
         });
     },
 

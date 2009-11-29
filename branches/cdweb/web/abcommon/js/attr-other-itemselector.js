@@ -65,6 +65,13 @@ function AttrOtherItemSelector(catId, catName, successFn){
             this.save();
         }).createDelegate(this)
     });
+    var btnToggle = new Ext.Button({
+        text: '继承的扩展属性',
+        iconCls: 'finish',
+        handler: (function() {
+            
+        }).createDelegate(this)
+    });
 
     this.fp = new Ext.grid.GridPanel({
         title: '可选扩展属性',
@@ -92,10 +99,10 @@ function AttrOtherItemSelector(catId, catName, successFn){
     this.sfp = new Ext.grid.GridPanel({
         title: '已选扩展属性',
         columnWidth: .5,
-        //height: 343,
         ds: new Ext.data.Store({
             proxy: new Ext.data.HttpProxy({
-                url: 'product/category-show-extend-attributes'
+                //url: 'product/category-show-extend-attributes'
+                url: 'product/category-list-self-extend-attributes'
             }),
             reader: new Ext.data.JsonReader({
                 root: 'list',
@@ -121,7 +128,6 @@ function AttrOtherItemSelector(catId, catName, successFn){
     this.win = new Ext.Window({
         title: '扩展属性设置 - ' + catName,
         width: 600,
-        //height: 420,
         autoHeight: true,
         resizable: false,
         layout: 'column',
@@ -130,7 +136,6 @@ function AttrOtherItemSelector(catId, catName, successFn){
         items: [this.fp, {
              id: 'split_bar',
              width: 23,
-             //height: 343,
              border: false,
              layout: 'table',
              layoutConfig: {

@@ -15,11 +15,19 @@ Ext.onReady(function(){
     });
 
     pnlProductCatTree.on('click', function(tnode){
-        if(tnode.id == '-2'){   // 点击"未分类" 查看其商品列表时调用单独的action url
+        if(tnode.id == '-2'){
+            // 点击"未分类" 查看其商品列表时调用单独的action url
             gridProduct.changeUrl('product/product-list-without-category');
+
+            //禁用"修改"按钮
+            btnEditProduct.setDisabled(true);
         }else{
-            gridProduct.resetUrl();  //每次点击其他的商品分类时，记得重置回最初的url
+            //每次点击其他的商品分类时，记得重置回最初的url
+            gridProduct.resetUrl();  
             gridProduct.bindBaseParam({categoryId: tnode.id});
+
+            //启用"修改"按钮
+            btnEditProduct.setDisabled(false);
         }
         gridProduct.load();
     });
@@ -38,6 +46,7 @@ Ext.onReady(function(){
             attrWin.show();
         }
     });
+    
     var btnChangeCat = new Ext.Button({
         text: '分类',
         iconCls: 'relation',
@@ -82,6 +91,7 @@ Ext.onReady(function(){
             });
         }
     });
+    
     var btnQuery = new Ext.Button({
         text: '高级查询',
         iconCls: 'search',
