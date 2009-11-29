@@ -162,10 +162,10 @@ Ext.onReady(function(){
             {header: '名称', dataIndex: 'name', width:120, sortable: true},
             {header: '基本单位', dataIndex: 'benchmark', width:80, renderer: function(val){
 	    	return val === true?'是':'否'
-             }},
+             }, sortable: true},
             {header: '是否有效', dataIndex: 'enabled', width:60, renderer: function(val){
 	    	return val === true?'是':'否'
-             }},
+             }, sortable: true},
             {header: '描述', id: 'description', dataIndex: 'description', width: 120}
         ],
         recordFn: [

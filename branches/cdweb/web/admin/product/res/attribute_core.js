@@ -43,8 +43,8 @@ Ext.onReady(function(){
                  return Constants.getValueByKey(val, Constants.ValueType);
             }, sortable: true},
             {header: '长度', dataIndex: 'maxLength', width:60, sortable: true},
-            {header: '分类', dataIndex: 'attributeType', width: 100},
-            {header: '默认值', dataIndex: 'defaultValue', width: 120},
+            {header: '分类', dataIndex: 'attributeType', width: 100, sortable: true},
+            {header: '默认值', dataIndex: 'defaultValue', width: 120, sortable: true},
             {header: '备注', id: 'description', dataIndex: 'description', width: 120}
         ],
         recordFn: [

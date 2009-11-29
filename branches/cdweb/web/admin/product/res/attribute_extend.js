@@ -177,8 +177,8 @@ Ext.onReady(function(){
             {header: '长度', dataIndex: 'maxLength', width:60, sortable: true},
             {header: '状态', dataIndex : 'enabled', width:60, renderer: function(val){
                  return Constants.getValueByKey(val, Constants.Enabled);
-            }},
-            {header: '默认值', dataIndex: 'defaultValue', width:120},
+            }, sortable: true},
+            {header: '默认值', dataIndex: 'defaultValue', width:120, sortable: true},
             {header: '备注', id: 'description', dataIndex: 'description',width:180}
         ],
         recordFn: [
