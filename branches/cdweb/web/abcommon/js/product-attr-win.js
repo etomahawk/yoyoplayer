@@ -270,6 +270,8 @@ ProductAttrWin.prototype = {
      *
      */
     initExtendTab: function(frm){
+        frm.removeAll();  //清空表单所有元素
+
         Ext.Ajax.request({
            //url: 'testjson/product_extend_attribute.json',
            url: 'product/product-list-extend-attributes',
@@ -289,7 +291,8 @@ ProductAttrWin.prototype = {
                               name: 'extendAttrField_'+ia,
 	                      fieldLabel: kk['attributeLabel'],
                               value: kk['attributeValue'] || '',
-                              extendAttributeId: kk['extendAttributeId']
+                              extendAttributeId: kk['extendAttributeId'],
+                              extendAttributeValueId: kk['id'] || 'fucku'
                            });
                        }
                    }
@@ -345,10 +348,14 @@ ProductAttrWin.prototype = {
         if(frmFields && frmFields.length>0){
             for(var ii=0;ii<frmFields.length;ii++){
                 var kk = frmFields[ii];
-                arr.push({
+                
+                var eas = {
                    extendAttributeId: kk.extendAttributeId,
                    attributeValue: kk.getValue()
-                });
+                };
+                if(kk.extendAttributeValueId != 'fucku')
+                   eas['id'] = kk.extendAttributeValueId;
+                arr.push(eas);
             }
         }
         var saveData = {productId: this.productId, extendAttributeValues: arr};
@@ -365,7 +372,12 @@ ProductAttrWin.prototype = {
                     Ext.Msg.show({
                         title: '系统消息',
                         msg: '保存成功!',
-                        buttons: {ok:'返回'}
+                        buttons: {ok:'返回'},
+                        fn: function(){
+                            //保存成功后重新加载form保证新增的记录都有ID
+                            this.initExtendTab(this.frmExtendAttr);
+                        },
+                        scope: this
                     });
                 }else{
                     Ext.Msg.show({
@@ -376,7 +388,8 @@ ProductAttrWin.prototype = {
                     });
                 }
             },
-            jsonData: saveData
+            jsonData: saveData,
+            scope: this
         });
     },
 

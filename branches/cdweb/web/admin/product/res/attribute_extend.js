@@ -87,9 +87,7 @@ Ext.onReady(function(){
                  },{
                    fieldLabel: '编码',
                    name: 'code',
-                   allowBlank: false,
-                   blankText: '编码'+ValidationRule.errorText.empty,
-                   vtype: 'code',
+                   disabled: true,
                    width: 150
                  },{
                    fieldLabel: '名称',
