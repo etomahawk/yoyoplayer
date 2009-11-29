@@ -98,8 +98,7 @@ function ProductAttrWin(productId){
             xtype: 'label'
         }]
     });
-
-    //var sm = new Ext.grid.CheckboxSelectionModel({handleMouseDown: Ext.emptyFn});
+    
     var comboMainUnit = new Ext.form.ComboBox({
         store: new Ext.data.SimpleStore({
             fields:['value','text'],
@@ -111,14 +110,17 @@ function ProductAttrWin(productId){
         displayField: 'text',
         readOnly:true
     });
-    comboMainUnit.on('select', function(_combo, _selRecord){
-        /*
+    comboMainUnit.on('select', (function(_combo, _selRecord){
+        //如果某一条记录选择'主单位==true'，其他记录必须自动选择为'主单位==false'
         if(_combo.getValue() === true){
             this.gridUomSetting.eachRecord(function(_record){
-                
+                if(_record.id != _selRecord.id && _record.get('mainUnit') == true){
+                    _record.set('mainUnit', false);
+                    _record.commit();
+                }
             });
-        }*/
-    });
+        }
+    }).createDelegate(this));
     this.gridUomSetting = new SimpleGrid.Panel({
         id: '_product_uom_setting_tab',
         title: '计量单位',

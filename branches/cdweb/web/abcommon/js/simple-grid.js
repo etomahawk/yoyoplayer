@@ -186,6 +186,12 @@ SimpleGrid.Panel.prototype = {
         return sels[0];
     },
 
+    /**
+     * 对store中的每条记录调用函数
+     *
+     * @param fn  调用的函数
+     *
+     */
     eachRecord: function(fn){
         var records = this.getStore().getRange();
         if(records && records.length>0){
