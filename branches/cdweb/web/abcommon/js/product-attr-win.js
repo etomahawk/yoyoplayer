@@ -70,7 +70,7 @@ function ProductAttrWin(productId){
                             scope: this  //作用域为AttrOtherItemSelector类的对象
                         });
                     },
-                    failure: function(){
+                    failure: function(form, action){
                         Ext.Msg.alert('系统提示', '上传失败'+(action.result.message || ''));
                     },
                     scope: this
@@ -502,8 +502,9 @@ ProductAttrWin.prototype = {
         var _src = 'http://sc.chinaz.biz/Files/pic/icon3/2737.jpg';
         var arr = this.frmCoreAttr.find('name', 'paper.thumbnailUrl');
         if(arr && arr.length==1){
-            if(arr[0].getValue() != '')
-                _src = contextPath+arr[0].getValue();
+            var _val = arr[0].getValue();
+            if(_val && _val != '')
+                _src = contextPath+_val;
         }
         
         Ext.getCmp('_product_photo_box').getEl().dom.src = _src;
