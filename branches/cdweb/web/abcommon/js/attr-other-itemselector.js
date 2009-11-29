@@ -18,7 +18,8 @@ function AttrOtherItemSelector(catId, catName, successFn){
     this.fpStore = new Ext.data.Store({
         proxy: new Ext.data.HttpProxy({
             //url: 'testjson/attribute_other_list.json'
-            url: 'product/extend-attribute-list'
+            url: 'product/extend-attribute-list',
+            method: 'GET'
         }),
         reader: new Ext.data.JsonReader({
             root: 'list',
@@ -32,18 +33,18 @@ function AttrOtherItemSelector(catId, catName, successFn){
     });
 
     var txQtitle = new Ext.form.TextField({
-        id: 'txqTitle',
-        name: 'title',
-        allowBlank: true,
-        blankText: '',
         width:80
     });
 
     var btnSearch = new Ext.Button({
         text: '查询',
         iconCls: 'search',
-        handler: function(){
-        }
+        handler: (function(){
+            this.fpStore.on('beforeload', function(){
+                Ext.apply(this.baseParams, {name: txQtitle.getValue().trim()});
+            });
+            this.fpStore.load({params: {start: 0, limit: 10}});
+        }).createDelegate(this)
     });
 
     var btn2Left = new Ext.Button({
@@ -66,12 +67,56 @@ function AttrOtherItemSelector(catId, catName, successFn){
         }).createDelegate(this)
     });
     var btnToggle = new Ext.Button({
-        text: '继承的扩展属性',
-        iconCls: 'finish',
-        handler: (function() {
-            
+        text: '查看继承的扩展属性',
+        iconCls: 'parent-extend-attr-btn',
+        handler: (function(btn) {
+            if(btn.currentStatus == 'view-self'){
+                this.sfp.getStore().on('beforeload', function(){
+                    //切换到查看继承扩展属性的URL
+                    this.proxy.conn.url = 'product/category-list-parent-extend-attributes';
+                });
+                this.sfp.getStore().load({
+                    params: {id: this.catId},
+                    callback: function(r, opt, blSuccess){
+                        if(blSuccess){  //禁用"保存"和"添加删除"按钮
+                            btnSave.setDisabled(true);
+                            this.eachBtn(function(el){
+                               el.setDisabled(true);
+                            });
+                            btn.setIconClass('self-extend-attr-btn');
+                            btn.setText('查看自己的扩展属性');
+
+                            btn.currentStatus = 'view-parent';
+                        }
+                    },
+                    scope: this
+                });
+            }else{
+                this.sfp.getStore().on('beforeload', function(){
+                    //切换到查看自身扩展属性的URL
+                    this.proxy.conn.url = 'product/category-list-self-extend-attributes';
+                });
+                this.sfp.getStore().load({
+                    params: {id: this.catId},
+                    callback: function(r, opt, blSuccess){
+                        if(blSuccess){  //启用"保存"和"添加删除"按钮
+                            btnSave.setDisabled(false);
+                            this.eachBtn(function(el){
+                               el.setDisabled(false);
+                            });
+                            btn.setIconClass('parent-extend-attr-btn');
+                            btn.setText('查看继承的扩展属性');
+
+                            btn.currentStatus = 'view-self';
+                        }
+                    },
+                    scope: this
+                });
+            }
         }).createDelegate(this)
     });
+    btnToggle.currentStatus = 'view-self';
+    
 
     this.fp = new Ext.grid.GridPanel({
         title: '可选扩展属性',
@@ -102,7 +147,8 @@ function AttrOtherItemSelector(catId, catName, successFn){
         ds: new Ext.data.Store({
             proxy: new Ext.data.HttpProxy({
                 //url: 'product/category-show-extend-attributes'
-                url: 'product/category-list-self-extend-attributes'
+                url: 'product/category-list-self-extend-attributes',
+                method: 'GET'
             }),
             reader: new Ext.data.JsonReader({
                 root: 'list',
@@ -122,7 +168,7 @@ function AttrOtherItemSelector(catId, catName, successFn){
             singleSelect:true
         }),
         autoScroll: true,
-        tbar:[btnSave]
+        tbar:[btnSave,'-',btnToggle]
     });
 
     this.win = new Ext.Window({
@@ -175,7 +221,7 @@ function AttrOtherItemSelector(catId, catName, successFn){
 AttrOtherItemSelector.prototype = {
 
 	addEvent: function(){
-            this.eachBtn(function(el){
+            this.eachBtnEl(function(el){
 	   	  el.on('click', (function(event){
                        var btnEl = Ext.get(event.target);
 	   	       if(btnEl.hasClass('to-right-btn')){    // >
@@ -214,9 +260,29 @@ AttrOtherItemSelector.prototype = {
 	   }
         },
 
-	eachBtn: function(fn){
+        /**
+         * 对split_bar的每个按钮调用函数
+         *
+         * @param fn  调用的函数
+         *
+         * @deprecated 实际操作的是按钮的Ext.Element对象
+         * @see eachBtn(fn)
+         */
+	eachBtnEl: function(fn){
             this.win.getComponent('split_bar').getEl().select('button.to-btn').each(fn, this);
 	},
+
+        /**
+         * 对split_bar的每个按钮调用函数
+         *
+         * @param fn  调用的函数
+         * 
+         */
+        eachBtn: function(fn){
+            Ext.each(this.win.getComponent('split_bar').findBy(function(cmp){
+                return cmp.getXType() == 'button';
+            }), fn, this);
+        },
 
         /**
          * 保存商品类别的扩展属性

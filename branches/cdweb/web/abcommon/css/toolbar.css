@@ -104,3 +104,11 @@
     border-top:1px dashed #ff0000;
     border-bottom:1px dashed #ff0000;
 }
+
+.parent-extend-attr-btn {
+    background-image:url(../images/top2.gif) !important;
+}
+
+.self-extend-attr-btn {
+    background-image:url(../images/bottom2.gif) !important;
+}

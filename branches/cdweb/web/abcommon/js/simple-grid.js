@@ -154,7 +154,7 @@ SimpleGrid.Panel.prototype = {
         this.getStore().on('beforeload', function(){
             this.proxy.conn.url = newUrl;
             this.baseParams = {};
-        })
+        });
     },
     /**
      * 重置回最初的URL
