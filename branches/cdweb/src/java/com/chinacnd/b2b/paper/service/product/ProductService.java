@@ -120,9 +120,34 @@ public class ProductService {
         product.setMeasureUnitSetting(list);
     }
 
+    public Product getValidProduct(Long productId) throws ServiceException {
+        Product product = findById(productId);
+        checkProductCategory(product);
+        return product;
+    }
+
+    /**
+     * 检查商品是否属性某个分类，因为有些操作是必须要有
+     * 分类的商品才可以操作的，比如编辑基本属性
+     * ，扩展属性，计量单位，以及保存这些属性
+     */
+    private void checkProductCategory(Product product) throws ServiceException {
+        if (product == null) {
+            throw new ServiceException("商品的ID非法");
+        }
+        Category category = product.getCategory();
+        if (category == null) {
+            throw new ServiceException("商品所属分类不能为空");
+        }
+        if (category.getParent() == null) {
+            throw new ServiceException("未分类的商品");
+        }
+    }
+
     @Transactional(readOnly = true)
-    public List<ProductUnitSettingJson> getProductUnitSettings(ProductForm form) {
+    public List<ProductUnitSettingJson> getProductUnitSettings(ProductForm form) throws ServiceException {
         Product product = findById(form.getId());
+        checkProductCategory(product);
         List<ProductUnitSetting> productUnitSettings = product.getMeasureUnitSetting();
         Page page = Page.from(form);
         OrderBy orderBy = OrderBy.from(form);
@@ -154,9 +179,7 @@ public class ProductService {
     public List<ExtendAttributeValue> getExtendAttributeValuesById(Long id) throws ServiceException {
         Product product = findById(id);
         Category category = product.getCategory();
-        if (category == null) {
-            throw new ServiceException("当前商品不属于任何商品分类，所以不能有扩展属性");
-        }
+        checkProductCategory(product);
         List<ExtendAttribute> extendAttributes = categoryDAO.getAllExtendAttributes(category.getId());
         List<ExtendAttributeValue> extendAttributeValues = product.getExtendValueList();
         List<ExtendAttributeValue> list = new ArrayList<ExtendAttributeValue>();

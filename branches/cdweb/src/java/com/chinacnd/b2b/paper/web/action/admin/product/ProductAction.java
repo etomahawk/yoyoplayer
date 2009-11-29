@@ -48,8 +48,17 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
 
     @Action(value = "product-list-measure-units")
     public String listProductMeasureUnits() {
-        List<ProductUnitSettingJson> jsonList = productService.getProductUnitSettings(form);
-        setJsonList(jsonList, form.getTotalSize());
+        try {
+            List<ProductUnitSettingJson> jsonList = productService.getProductUnitSettings(form);
+            setJsonList(jsonList, form.getTotalSize());
+        } catch (ServiceException ex) {
+            ex.printStackTrace();
+            log.error(null, ex);
+            OperationResultJson json = new OperationResultJson();
+            json.setMessage(ex.getMessage());
+            json.setSuccess(false);
+            setJsonObject(json);
+        }
         return JSON_RESULT;
     }
 
@@ -92,19 +101,27 @@ public class ProductAction extends BaseAction implements ModelDriven<ProductForm
 
     @Action(value = "product-list-base-attributes")
     public String listBaseAttributes() {
-        Product product = productService.findById(form.getId());
-        Object json = null;
-        if (product instanceof Paper) {
-            json = new PaperJson((Paper) product);
-        } else if (product instanceof Pulp) {
-            json = new PulpJson((Pulp) product);
-        } else {
-            OperationResultJson rJson = new OperationResultJson();
-            rJson.setSuccess(false);
-            rJson.setMessage("只能编辑纸张或者纸浆的属性");
-            json = rJson;
+        try {
+            Product product = productService.getValidProduct(form.getId());
+            Object json = null;
+            if (product instanceof Paper) {
+                json = new PaperJson((Paper) product);
+            } else if (product instanceof Pulp) {
+                json = new PulpJson((Pulp) product);
+            } else {
+                OperationResultJson rJson = new OperationResultJson();
+                rJson.setSuccess(false);
+                rJson.setMessage("只能编辑纸张或者纸浆的属性");
+                json = rJson;
+            }
+            setJsonObject(json);
+        } catch (ServiceException ex) {
+            ex.printStackTrace();
+            OperationResultJson json = new OperationResultJson();
+            json.setSuccess(false);
+            json.setMessage(ex.getMessage());
+            setJsonObject(json);
         }
-        setJsonObject(json);
         return JSON_RESULT;
     }
 
