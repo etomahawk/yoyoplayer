@@ -28,7 +28,7 @@ public class ProductImageUploadAction extends BaseAction {
     private File imgFile;//上传的图片文件
     private String fileName;//上传的文件名
     private String contentType;//内容格式
-    private Map<String, String> uploadJsonRoot;
+    private Map<String, Object> uploadJsonRoot;
     private List<String> allowedImgs;//允许上传的文件后缀
 
     @Action(value = "product-upload-image", results = {
@@ -36,16 +36,16 @@ public class ProductImageUploadAction extends BaseAction {
         params = {"contentType", "text/html", "root", "uploadJsonRoot"})
     })
     public String uploadImage() {
-        uploadJsonRoot = new HashMap<String, String>();
+        uploadJsonRoot = new HashMap<String, Object>();
         String reason = checkFile();
         if (reason == null) {
             String url = saveFile();
             uploadJsonRoot.put("thumbnailUrl", url);
-            uploadJsonRoot.put("success", "true");
-            uploadJsonRoot.put("timeout", "false");
+            uploadJsonRoot.put("success", true);
+            uploadJsonRoot.put("timeout", false);
         } else {
-            uploadJsonRoot.put("success", "false");
-            uploadJsonRoot.put("timeout", "false");
+            uploadJsonRoot.put("success", false);
+            uploadJsonRoot.put("timeout", false);
             uploadJsonRoot.put("message", reason);
         }
         return "upload";
@@ -106,7 +106,7 @@ public class ProductImageUploadAction extends BaseAction {
         this.fileName = fileName;
     }
 
-    public Map<String, String> getUploadJsonRoot() {
+    public Map<String, Object> getUploadJsonRoot() {
         return uploadJsonRoot;
     }
 }
