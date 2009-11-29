@@ -478,8 +478,6 @@ CdForm.ProductCatTreeSelector.prototype = {
         }else{
             idTypeN = expandPath.substring(0, indexN);
         }
-
-        alert('当前商品类型的结点ID='+ idTypeN);
         
         this.win.show(false, function(){
             var othis = this;  //创建一个闭包
@@ -491,7 +489,7 @@ CdForm.ProductCatTreeSelector.prototype = {
 
                     var typeN = othis.tree.getNodeById(idTypeN);  //当前商品类型的结点（纸张/纸浆）
                     var otherTypeN = typeN.nextSibling || typeN.previousSibling;
-                    alert('隐藏这个结点：' + otherTypeN.text);
+                    
                     if(otherTypeN){  //隐藏互斥的商品类型的结点
                         otherTypeN.getUI().hide();
                     }
