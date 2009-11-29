@@ -84,7 +84,8 @@ function AttrOtherItemSelector(catId, catName, successFn){
                                el.setDisabled(true);
                             });
                             btn.setIconClass('self-extend-attr-btn');
-                            btn.setText('查看自己的扩展属性');
+                            btn.setText('查看本级的扩展属性');
+                            this.sfp.setTitle('已选扩展属性 - 继承');
 
                             btn.currentStatus = 'view-parent';
                         }
@@ -106,6 +107,7 @@ function AttrOtherItemSelector(catId, catName, successFn){
                             });
                             btn.setIconClass('parent-extend-attr-btn');
                             btn.setText('查看继承的扩展属性');
+                            this.sfp.setTitle('已选扩展属性 - 本级');
 
                             btn.currentStatus = 'view-self';
                         }
@@ -142,7 +144,7 @@ function AttrOtherItemSelector(catId, catName, successFn){
     });
 
     this.sfp = new Ext.grid.GridPanel({
-        title: '已选扩展属性',
+        title: '已选扩展属性 - 本级',
         columnWidth: .5,
         ds: new Ext.data.Store({
             proxy: new Ext.data.HttpProxy({
