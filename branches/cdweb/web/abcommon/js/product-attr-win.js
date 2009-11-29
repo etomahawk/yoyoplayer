@@ -94,11 +94,12 @@ function ProductAttrWin(productId){
     this.pnlPhoto = new Ext.Panel({
         region: 'east',
         border: false,
+        width: 110,
         items: [{
           id: '_product_photo_box',
           xtype: 'box',
           height:100,
-          width: 100,
+          
           autoEl: {
               tag: 'img'
           }
