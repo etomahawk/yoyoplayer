@@ -100,6 +100,22 @@ function ProductAttrWin(productId){
     });
 
     //var sm = new Ext.grid.CheckboxSelectionModel({handleMouseDown: Ext.emptyFn});
+    var comboMainUnit = new Ext.form.ComboBox({
+        store: new Ext.data.SimpleStore({
+            fields:['value','text'],
+            data: Constants.BooleanType
+        }),
+        mode: 'local',
+        triggerAction: 'all',
+        valueField: 'value',
+        displayField: 'text',
+        readOnly:true
+    });
+    comboMainUnit.on('select', function(_combo, _record){
+        if(_combo.getValue() === true){
+            
+        }
+    });
     this.gridUomSetting = new SimpleGrid.Panel({
         id: '_product_uom_setting_tab',
         title: '计量单位',
@@ -110,26 +126,16 @@ function ProductAttrWin(productId){
         autoWidth: true,
         cm: [
             {header: '单位名称', dataIndex: 'measureUnitName', width:30},
-            {header: '换算比例',dataIndex: 'quotiety',
+            {header: '换算比例', dataIndex: 'quotiety',
                 editor: new Ext.grid.GridEditor(new Ext.form.TextField({allowBlank: false}))
             },
-            {header: '是否主单位',dataIndex: 'mainUnit',
-                editor:new Ext.grid.GridEditor(new Ext.form.ComboBox({
-                   store: new Ext.data.SimpleStore({
-                      fields:['value','text'],
-                      data: Constants.BooleanType
-                   }),
-                   mode: 'local',
-                   triggerAction: 'all',
-                   valueField: 'value',
-                   displayField: 'text',
-                   readOnly:true
-                })),
+            {header: '是否主单位', dataIndex: 'mainUnit',
+                editor:new Ext.grid.GridEditor(comboMainUnit),
                 renderer: function(kk){
                    return Constants.getValueByKey(kk, Constants.BooleanType);
                 }
             },
-            {header: '是否启用',dataIndex: 'enabled',
+            {header: '是否启用', dataIndex: 'enabled',
                 editor:new Ext.grid.GridEditor(new Ext.form.ComboBox({
                    store: new Ext.data.SimpleStore({
                       fields:['value','text'],
@@ -154,9 +160,11 @@ function ProductAttrWin(productId){
            {name: 'mainUnit', type: 'boolean'},
            {name: 'quotiety', type: 'float'}
         ],
+        autoId: true,
         //url: 'testjson/product_rate_list.json'
         url: 'product/product-list-measure-units'
     });
+
 
     var tabpnl = new Ext.TabPanel({
         height: 400,
@@ -171,8 +179,10 @@ function ProductAttrWin(productId){
         if(newTab.getId() == '_product_extend_attr_tab' && !this.blExtendTabReady){
             this.initExtendTab(newTab);
         }else if(newTab.getId() == '_product_uom_setting_tab' && !this.blUomTabReady){
-            this.gridUomSetting.loadNotPaging({id: this.productId});
-            this.blUomTabReady = true;
+            this.gridUomSetting.loadNotPaging({id: this.productId}, function(){
+                this.blUomTabReady = true;
+                
+            }, this);
         }
     }).createDelegate(this));
 

@@ -34,7 +34,7 @@ SimpleGrid.Panel = function(options){
         reader: new Ext.data.JsonReader({
             root: 'list',
             totalProperty: 'totalSize',
-            id: 'id'
+            idProperty: options['autoId'] == true?false:'id'  //指定代表Record ID 的field
         }, _recordFn),
         remoteSort: true
     });
@@ -127,9 +127,11 @@ SimpleGrid.Panel.prototype = {
         });
     },
 
-    loadNotPaging: function(params){
+    loadNotPaging: function(params, fn, scope){
         this.getStore().load({
-            params: params
+            params: params,
+            callback: fn,
+            scope: scope
         });
     },
 
@@ -182,6 +184,10 @@ SimpleGrid.Panel.prototype = {
             return false;
         }
         return sels[0];
+    },
+
+    eachRecord: function(fn){
+        
     }
     
 }
