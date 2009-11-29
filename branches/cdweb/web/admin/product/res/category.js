@@ -160,7 +160,7 @@ Ext.onReady(function(){
             {header: '分类名称', dataIndex: 'name', width:120, sortable: true},
             {header: '扩展属性', dataIndex: 'hasExtendAttributes', width: 80, renderer: function(val){
                  return val == true? '是':'否';
-            }, sortable: true}
+            }}
         ],
         recordFn: [
             {name: 'id', type: 'int'},
