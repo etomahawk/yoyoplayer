@@ -1,9 +1,0 @@
-{
-list:[
-  {"id":11,"extendAttributeId":1,"attributeLabel":"打印类型","attributeValue":"001"},
-  {"id":12,"extendAttributeId":2,"attributeLabel":"产品规格","attributeValue":"782*1092"},
-  {"id":13,"extendAttributeId":3,"attributeLabel":"产品包装","attributeValue":"牛皮"},
-  {"id":14,"extendAttributeId":4,"attributeLabel":"BCS采购价","attributeValue":"600"},
-  {"id":15,"extendAttributeId":5,"attributeLabel":"BCS零售价","attributeValue":"800"}
-]
-}

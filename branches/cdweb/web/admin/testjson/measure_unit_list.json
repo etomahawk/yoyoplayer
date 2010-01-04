@@ -1,6 +1,0 @@
-{"list":[
-     {"id":1,"code":"001","name":"吨","description":"desc1","benchmark":true,"enabled":true},
-     {"id":2,"code":"002","name":"件","description":"desc2","benchmark":false,"enabled":true},
-     {"id":3,"code":"003","name":"令","description":"desc3","benchmark":false,"enabled":true},
-     {"id":4,"code":"004","name":"张","description":"desc4","benchmark":false,"enabled":true}
- ],"totalSize":4,"success":true}
