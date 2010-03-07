@@ -69,7 +69,7 @@ public class SearchResult {
     public void save(String name) throws IOException {
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(
-                new FileOutputStream(new File(Config.HOME, "Lyrics/" + name))));
+                new FileOutputStream(new File(Config.HOME, "Lyrics/" + name)),"GBK"));
         bw.write(String.valueOf(getContent()));
         bw.close();
     }
