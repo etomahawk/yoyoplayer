@@ -47,6 +47,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.DropMode;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -61,7 +62,10 @@ import javax.swing.JSplitPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 /**
@@ -77,7 +81,7 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
     private PlayListItem currentItem;//当前的列表项
     private PlayList currentPlayList;//当前所使用的播放列表
     private PlayerUI player;//播放器的主UI界面兼播放器
-    private JList leftList,  rightList;//左边和右边的列表
+    private JList leftList, rightList;//左边和右边的列表
     private JSplitPane split;//一个分隔栏
     private Config config;//全局配置对象
     private final DataFlavor flavor = new DataFlavor(MyData.class, "内部数据");
@@ -168,6 +172,10 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         leftList.addMouseListener(this);
         rightList.addMouseListener(this);
         rightList.addMouseMotionListener(this);
+
+        leftList.setBorder(new EmptyBorder(0, 0, 0, 0));
+        rightList.setBorder(new EmptyBorder(0, 0, 0, 0));
+
         JScrollPane jsp1 = new JScrollPane(leftList);
         JScrollPane jsp2 = new JScrollPane(rightList);
 //        jsp1.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -198,11 +206,39 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                 }
             }
         });
+
+
+        jsp1.setBorder(new EmptyBorder(0, 0, 0, 0));
+        jsp2.setBorder(new EmptyBorder(0, 0, 0, 0));
+
+        Color backgdColor = new Color(236, 233, 216);
+        UIDefaults uidefs = UIManager.getLookAndFeelDefaults();
+        uidefs.put("SplitPane.background", new ColorUIResource(BG));
+//        uidefs.put("SplitPane.background", new ColorUIResource(backgdColor));
+        uidefs.put("SplitPane.foreground", new ColorUIResource(FORE));
+
+        AzSplitPaneUI azSplitPaneUI = new AzSplitPaneUI();
+        ImageIcon splitLeftIcon = new ImageIcon(Util.getImage("playlist/splitLeftIcon.gif"));
+
+        ImageIcon splitLeftFocusIcon = new ImageIcon(
+                Util.getImage("playlist/splitLeftIcon1.gif"));
+
+        ImageIcon splitRightIcon = new ImageIcon(Util.getImage("playlist/splitRightIcon.gif"));
+
+        ImageIcon splitRightFocusIcon = new ImageIcon(
+                Util.getImage("playlist/splitRightIcon1.gif"));
+        azSplitPaneUI.setImageIcons(splitLeftIcon, splitLeftFocusIcon,
+                splitRightIcon, splitRightFocusIcon);
+
         split = new JSplitPane(SwingConstants.VERTICAL, true, jsp1, jsp2);
         split.setBorder(new EmptyBorder(0, 0, 0, 0));
+        split.setDividerLocation(60);
+        split.setUI(azSplitPaneUI);
+        split.setOneTouchExpandable(true);
+
         this.add(split);
         initDragList();
-        split.setDividerLocation(60);
+
         //添加键盘事件,以可以用键盘直接删除列表项
         rightList.addKeyListener(new KeyAdapter() {
 
@@ -230,23 +266,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
     private void initDragList() {
 
         DragSource ds = DragSource.getDefaultDragSource();
-        ds.createDefaultDragGestureRecognizer(rightList, DnDConstants.ACTION_COPY_OR_MOVE, new  
+        ds.createDefaultDragGestureRecognizer(rightList, DnDConstants.ACTION_COPY_OR_MOVE, new DragGestureListener() {
 
-              DragGestureListener( ) {
-
-                   
-
-                    public    
-                          
-                    
-
-                        
-                         
-                    
-
-                           
-                          
-                               void dragGestureRecognized(DragGestureEvent dge) {
+            public void dragGestureRecognized(DragGestureEvent dge) {
                 dge.startDrag(DragSource.DefaultCopyDrop, new Transferable() {
 
                     public DataFlavor[] getTransferDataFlavors() {
@@ -271,9 +293,7 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                 });
             }
         });
-        rightList.setTransferHandler(new  
-
-              TransferHandler  () {
+        rightList.setTransferHandler(new TransferHandler() {
 
             private static final long serialVersionUID = 20071214L;
 
@@ -284,11 +304,11 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                 }
                 String os = System.getProperty("os.name");
                 if (os.startsWith("Windows")) {
-                    return (support.isDataFlavorSupported(DataFlavor.javaFileListFlavor) ||
-                            support.isDataFlavorSupported(flavor));
+                    return (support.isDataFlavorSupported(DataFlavor.javaFileListFlavor)
+                            || support.isDataFlavorSupported(flavor));
                 } else if (os.startsWith("Linux")) {
-                    return support.isDataFlavorSupported(DataFlavor.stringFlavor) ||
-                            support.isDataFlavorSupported(flavor);
+                    return support.isDataFlavorSupported(DataFlavor.stringFlavor)
+                            || support.isDataFlavorSupported(flavor);
                 } else {
                     return super.canImport(support);
                 }
@@ -340,8 +360,8 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                             }
                         }
 
-                    } else if (trans.isDataFlavorSupported(DataFlavor.stringFlavor) &&
-                            System.getProperty("os.name").startsWith("Linux")) {
+                    } else if (trans.isDataFlavorSupported(DataFlavor.stringFlavor)
+                            && System.getProperty("os.name").startsWith("Linux")) {
                         obj = trans.getTransferData(DataFlavor.stringFlavor);
                         log.info("得到的内容是：" + obj);
                         String[] ss = obj.toString().split("\r\n");
@@ -387,7 +407,7 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                 PlayListItem item = new PlayListItem(Util.getSongName(f), f.getPath(), -1, true);
                 currentPlayList.addItemAt(item, index);
                 toSelect = item;
-            //如果是目录，则遍历它下面的文件，不再往下层遍历了
+                //如果是目录，则遍历它下面的文件，不再往下层遍历了
             } else if (f.isDirectory()) {
                 File[] fs = f.listFiles(ff);
                 for (File file : fs) {
@@ -506,12 +526,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
     private void showLeftMenu(MouseEvent e) {
         JPopupMenu pop = new JPopupMenu();
         //新建列表
-        pop.add(Config.getResource("playlistL.newplaylist")).addActionListener(new  
+        pop.add(Config.getResource("playlistL.newplaylist")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-                   public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 int i = playlists.size();
                 String name = Config.getResource("playlistL.PreNEW") + (i + 1);
                 BasicPlayList plist = new BasicPlayList(config);
@@ -525,11 +542,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //添加列表
-        pop.add(Config.getResource("playlistL.addplaylist")).addActionListener(new  
+        pop.add(Config.getResource("playlistL.addplaylist")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 JFileChooser jf = Util.getFileChooser(new FileNameFilter("m3u,pls",
                         Config.getResource("playlist.filechooser.name"), true),
                         JFileChooser.FILES_ONLY);
@@ -543,8 +558,8 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                         leftList.setListData(playlists);
                         leftList.setSelectedValue(bp, true);
                         repaint();
-                    //SwingUtilities.updateComponentTreeUI(leftList);
-                    //SwingUtilities.updateComponentTreeUI(rightList);
+                        //SwingUtilities.updateComponentTreeUI(leftList);
+                        //SwingUtilities.updateComponentTreeUI(rightList);
                     }
                 }
             }
@@ -552,12 +567,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         //保存列表
         JMenuItem save = new JMenuItem(Config.getResource("playlistL.saveplaylist"));
         save.setEnabled(leftIndex != -1);
-        pop.add(save).addActionListener(new  
+        pop.add(save).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 PlayList pl = playlists.get(leftIndex);
                 JFileChooser jf = Util.getFileChooser(new FileNameFilter("m3u",
                         Config.getResource("playlist.filechooser.name"), true),
@@ -573,12 +585,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         //删除列表
         JMenuItem delete = new JMenuItem(Config.getResource("playlistL.deleteplaylist"));
         delete.setEnabled(leftIndex != -1);
-        pop.add(delete).addActionListener(new  
+        pop.add(delete).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                
-                   public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 playlists.remove(leftIndex);
                 if (playlists.size() > 0) {
                     if (leftIndex > playlists.size() - 1) {
@@ -589,16 +598,14 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                 }
                 leftList.setListData(playlists);
                 repaint();
-            //SwingUtilities.updateComponentTreeUI(leftList);
+                //SwingUtilities.updateComponentTreeUI(leftList);
             }
         });
         pop.addSeparator();
         //保存所有
-        pop.add(Config.getResource("playlistL.saveall")).addActionListener(new  
+        pop.add(Config.getResource("playlistL.saveall")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 JFileChooser jf = Util.getFileChooser(new FileNameFilter("m3u",
                         Config.getResource("playlist.filechooser.name"), true),
                         JFileChooser.DIRECTORIES_ONLY);
@@ -620,12 +627,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         //重命名列表
         JMenuItem rename = new JMenuItem(Config.getResource("playlistL.rename"));
         rename.setEnabled(leftIndex != -1);
-        pop.add(rename).addActionListener(new  
+        pop.add(rename).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 PlayList pl = playlists.get(leftIndex);
                 String s = JOptionPane.showInputDialog(config.getPlWindow(), Config.getResource("playlist.rename.content"));
                 if (s != null && !s.trim().equals("")) {
@@ -633,32 +637,15 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                 }
                 leftList.setListData(playlists);
                 repaint();
-            //SwingUtilities.updateComponentTreeUI(leftList);
+                //SwingUtilities.updateComponentTreeUI(leftList);
             }
         });
         pop.addSeparator();
         //重排序列表
-        pop.add(Config.getResource("playlistL.resort")).addActionListener(new  
+        pop.add(Config.getResource("playlistL.resort")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-
-                    public       
-                           
-                           
-                          
-                    
-                
-                
-                
-            
-        
-          
-    
-
-     void actionPerformed(ActionEvent ae) {
-         Collections.sort(playlists, new Comparator<PlayList>() {
+            public void actionPerformed(ActionEvent ae) {
+                Collections.sort(playlists, new Comparator<PlayList>() {
 
                     public int compare(PlayList o1, PlayList o2) {
                         String s1 = o1.getName();
@@ -668,7 +655,7 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                 });
                 repaint();
                 leftList.setListData(playlists);
-            //SwingUtilities.updateComponentTreeUI(leftList);
+                //SwingUtilities.updateComponentTreeUI(leftList);
             }
         });
         pop.show(e.getComponent(), e.getX(), e.getY());
@@ -687,18 +674,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             JPopupMenu pop = new JPopupMenu();
             //播放按钮
             if (rightIndex != -1) {
-                pop.add("<html><b>" + Config.getResource("playlist.play")).addActionListener(new  
+                pop.add("<html><b>" + Config.getResource("playlist.play")).addActionListener(new ActionListener() {
 
-                      ActionListener( ) {
-
-                           
-                         
-                        
-                        
-                    
-                
-            
-               public void actionPerformed(ActionEvent ae) {
+                    public void actionPerformed(ActionEvent ae) {
                         PlayListItem pl = currentPlayList.getItemAt(rightIndex);
                         currentPlayList.setItemSelected(pl, rightList.getSelectedIndex());
                         player.setPlayerState(PlayerUI.PLAY);
@@ -710,12 +688,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
 //            pop.addSeparator();
             //文件属性
             if (rightIndex != -1) {
-                pop.add(Config.getResource("playlist.file.property")).addActionListener(new  
+                pop.add(Config.getResource("playlist.file.property")).addActionListener(new ActionListener() {
 
-                      ActionListener( ) {
-
-                           
-                           public void actionPerformed(ActionEvent ae) {
+                    public void actionPerformed(ActionEvent ae) {
                         PlayListItem pl = currentPlayList.getItemAt(rightIndex);
                         if (pl != null) {
                             new SongInfoDialog(config.getPlWindow(), true, pl).setVisible(true);
@@ -769,16 +744,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         //加这个限制是因为只有文件才能重命名,而网上的文件就不行了
         menu.setEnabled(currentPlayList.getItemAt(rightIndex).isFile());
         //歌曲.扩展名命名法
-        menu.add(Config.getResource("playlist.rename.songName.ext")).addActionListener(new  
+        menu.add(Config.getResource("playlist.rename.songName.ext")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-                    
-                    
-                
-                    
-                       public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 PlayListItem item = currentPlayList.getItemAt(rightIndex);
                 //说明 这个时候正在播放这首歌曲,所以先停下来
                 if (item == player.getCurrentItem()) {
@@ -795,13 +763,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //歌手 - 歌曲名.扩展名
-        menu.add(Config.getResource("playlist.rename.artist.songName.ext")).addActionListener(new  
+        menu.add(Config.getResource("playlist.rename.artist.songName.ext")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-                    
-                       public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 PlayListItem item = currentPlayList.getItemAt(rightIndex);
                 File file = new File(item.getLocation());
                 File rename = new File(file.getParent(),
@@ -815,13 +779,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //歌曲名 - 歌手.扩展名
-        menu.add(Config.getResource("playlist.rename.songName.aritst.ext")).addActionListener(new  
+        menu.add(Config.getResource("playlist.rename.songName.aritst.ext")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-                    
-                       public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 PlayListItem item = currentPlayList.getItemAt(rightIndex);
                 File file = new File(item.getLocation());
                 File rename = new File(file.getParent(),
@@ -844,11 +804,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
     private JMenu createAddMenu() {
         JMenu menu = new JMenu(Config.getResource("playlist.add"));
         //添加文件
-        menu.add(Config.getResource("playlist.add.file")).addActionListener(new  
+        menu.add(Config.getResource("playlist.add.file")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                     public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 JFileChooser jf = Util.getFileChooser(new FileNameFilter(Config.EXTS,
                         Config.getResource("playlist.filechooser.name"), true), JFileChooser.FILES_ONLY);
                 int i = jf.showOpenDialog(config.getPlWindow());
@@ -865,11 +823,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //添加文件夹
-        menu.add(Config.getResource("playlist.add.dir")).addActionListener(new  
+        menu.add(Config.getResource("playlist.add.dir")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                     public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 JFileChooser jf = Util.getFileChooser(new FileNameFilter(Config.EXTS,
                         Config.getResource("playlist.filechooser.name"), true), JFileChooser.DIRECTORIES_ONLY);
                 int i = jf.showOpenDialog(config.getPlWindow());
@@ -892,11 +848,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //添加网络地址
-        menu.add(Config.getResource("playlist.add.url")).addActionListener(new  
+        menu.add(Config.getResource("playlist.add.url")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 String s = JOptionPane.showInputDialog(config.getPlWindow(),
                         Config.getResource("playlist.add.inputurl"));
                 if (s != null) {
@@ -929,19 +883,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             return menu;
         }
         //删除当前项
-        menu.add(Config.getResource("playlist.delete.select")).addActionListener(new  
+        menu.add(Config.getResource("playlist.delete.select")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-                     
-                     
-                
-                
-                
-            
-        
-        public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 Object[] objs = rightList.getSelectedValues();
                 for (Object obj : objs) {
                     currentPlayList.removeItem((PlayListItem) obj);
@@ -951,12 +895,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //删除重复项
-        menu.add(Config.getResource("playlist.delete.repeat")).addActionListener(new  
+        menu.add(Config.getResource("playlist.delete.repeat")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 Vector<PlayListItem> vs = currentPlayList.getAllItems();
                 for (int i = 0; i < vs.size() - 1; i++) {
                     PlayListItem item1 = vs.get(i);
@@ -972,17 +913,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //删除错误文件
-        menu.add(Config.getResource("playlist.delete.error")).addActionListener(new  
+        menu.add(Config.getResource("playlist.delete.error")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-                    
-                     
-                      
-                            
-                          
-                             public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 Vector<PlayListItem> vs = currentPlayList.getAllItems();
                 List<PlayListItem> temp = new ArrayList<PlayListItem>();
                 for (PlayListItem item : vs) {
@@ -1005,14 +938,8 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         });
 
         //清空列表
-        menu.add(Config.getResource("playlist.delete.all")).addActionListener(new  
+        menu.add(Config.getResource("playlist.delete.all")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                
-                
-            
-        
             public void actionPerformed(ActionEvent ae) {
                 currentPlayList.removeAllItems();
                 rightList.setListData(currentPlayList.getAllItems());
@@ -1022,11 +949,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         JMenuItem delete = new JMenuItem(Config.getResource("playlist.delete.deletefile"));
         menu.add(delete);
         delete.setEnabled(!config.isDisableDelete());
-        delete.addActionListener(new  
+        delete.addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 if (JOptionPane.YES_OPTION == JOptionPane.showConfirmDialog(config.getPlWindow(),
                         Config.getResource("playlist.deletefile.confirm"),
                         Config.getResource("confirm"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
@@ -1053,11 +978,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         //可以再实现的完美一些,比如继续查找,混合查找等等
         JMenu menu = new JMenu(Config.getResource("playlist.search"));
         //快速查找
-        menu.add(Config.getResource("playlist.search.fileName")).addActionListener(new  
+        menu.add(Config.getResource("playlist.search.fileName")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 String s = JOptionPane.showInputDialog(config.getPlWindow(),
                         Config.getResource("playlist.search.inputFileName"));
                 if (s != null) {
@@ -1071,11 +994,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                 }
             }
         });
-        menu.add(Config.getResource("playlist.search.title")).addActionListener(new  
+        menu.add(Config.getResource("playlist.search.title")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 String s = JOptionPane.showInputDialog(config.getPlWindow(),
                         Config.getResource("playlist.search.inputTitle"));
                 if (s != null) {
@@ -1089,11 +1010,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                 }
             }
         });
-        menu.add(Config.getResource("playlist.search.artist")).addActionListener(new  
+        menu.add(Config.getResource("playlist.search.artist")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 String s = JOptionPane.showInputDialog(config.getPlWindow(),
                         Config.getResource("playlist.search.inputArtist"));
                 if (s != null) {
@@ -1107,11 +1026,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
                 }
             }
         });
-        menu.add(Config.getResource("playlist.search.album")).addActionListener(new  
+        menu.add(Config.getResource("playlist.search.album")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 String s = JOptionPane.showInputDialog(config.getPlWindow(),
                         Config.getResource("playlist.search.inputAlbum"));
                 if (s != null) {
@@ -1131,14 +1048,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
     private JMenu createSortMenu() {
         JMenu menu = new JMenu(Config.getResource("playlist.sort"));
         //按歌手
-        menu.add(Config.getResource("playlist.sort.artist")).addActionListener(new  
+        menu.add(Config.getResource("playlist.sort.artist")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-
-                    public       
-                             void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 Collections.sort(currentPlayList.getAllItems(), new Comparator<PlayListItem>() {
 
                     public int compare(PlayListItem o1, PlayListItem o2) {
@@ -1151,14 +1063,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //按标题
-        menu.add(Config.getResource("playlist.sort.title")).addActionListener(new  
+        menu.add(Config.getResource("playlist.sort.title")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-
-                    public       
-                             void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 Collections.sort(currentPlayList.getAllItems(), new Comparator<PlayListItem>() {
 
                     public int compare(PlayListItem o1, PlayListItem o2) {
@@ -1171,14 +1078,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //按专辑
-        menu.add(Config.getResource("playlist.sort.album")).addActionListener(new  
+        menu.add(Config.getResource("playlist.sort.album")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-
-                    public       
-                             void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 Collections.sort(currentPlayList.getAllItems(), new Comparator<PlayListItem>() {
 
                     public int compare(PlayListItem o1, PlayListItem o2) {
@@ -1191,14 +1093,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //按文件名
-        menu.add(Config.getResource("playlist.sort.fileName")).addActionListener(new  
+        menu.add(Config.getResource("playlist.sort.fileName")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-
-                    public       
-                             void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 Collections.sort(currentPlayList.getAllItems(), new Comparator<PlayListItem>() {
 
                     public int compare(PlayListItem o1, PlayListItem o2) {
@@ -1211,21 +1108,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             }
         });
         //按歌曲长度
-        menu.add(Config.getResource("playlist.sort.length")).addActionListener(new  
+        menu.add(Config.getResource("playlist.sort.length")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-
-                    public       
-                            
-                    
-                
-                
-            
-        
-        
-        void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 Collections.sort(currentPlayList.getAllItems(), new Comparator<PlayListItem>() {
 
                     public int compare(PlayListItem o1, PlayListItem o2) {
@@ -1237,19 +1122,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         });
         menu.addSeparator();
         //随机乱序 
-        menu.add(Config.getResource("playlist.sort.random")).addActionListener(new  
+        menu.add(Config.getResource("playlist.sort.random")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                
-                
-            
-        
-         
-    
-
-    public    
-            void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 Collections.shuffle(currentPlayList.getAllItems());
                 rightList.setListData(currentPlayList.getAllItems());
             }
@@ -1261,23 +1136,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         JMenu menu = new JMenu(Config.getResource("playlist.edit"));
         //剪切
         if (rightIndex != -1) {
-            menu.add(Config.getResource("playlist.edit.cut")).addActionListener(new  
+            menu.add(Config.getResource("playlist.edit.cut")).addActionListener(new ActionListener() {
 
-                  ActionListener( ) {
-
-                    
-                       
-                         
-                            
-                        
-                        
-                    
-                    
-                    
-                
-            
-        
-           public void actionPerformed(ActionEvent ae) {
+                public void actionPerformed(ActionEvent ae) {
                     clip.clear();
                     Object[] objs = rightList.getSelectedValues();
                     for (Object obj : objs) {
@@ -1292,21 +1153,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         }
         //复制
         if (rightIndex != -1) {
-            menu.add(Config.getResource("playlist.edit.copy")).addActionListener(new  
+            menu.add(Config.getResource("playlist.edit.copy")).addActionListener(new ActionListener() {
 
-                  ActionListener( ) {
-
-                    
-                       
-                         
-                            
-                        
-                    
-                    
-                
-            
-        
-        public void actionPerformed(ActionEvent ae) {
+                public void actionPerformed(ActionEvent ae) {
                     clip.clear();
                     Object[] objs = rightList.getSelectedValues();
                     for (Object obj : objs) {
@@ -1318,11 +1167,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
             });
         }
         //粘帖
-        menu.add(Config.getResource("playlist.edit.paste")).addActionListener(new  
+        menu.add(Config.getResource("playlist.edit.paste")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 if (clip.size() > 0) {
                     PlayListItem last = null;
                     for (PlayListItem item : clip) {
@@ -1345,33 +1192,24 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         });
         menu.addSeparator();
         //全选
-        menu.add(Config.getResource("playlist.edit.selectAll")).addActionListener(new  
+        menu.add(Config.getResource("playlist.edit.selectAll")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 rightList.setSelectionInterval(0, currentPlayList.getPlaylistSize() - 1);
             }
         });
         //全不选
-        menu.add(Config.getResource("playlist.edit.selectNone")).addActionListener(new  
+        menu.add(Config.getResource("playlist.edit.selectNone")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                
-                  public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 rightList.clearSelection();
                 rightIndex = -1;
             }
         });
         //反选
-        menu.add(Config.getResource("playlist.edit.selectReverse")).addActionListener(new  
+        menu.add(Config.getResource("playlist.edit.selectReverse")).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                   
-                    
-                    public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 int[] indexes = rightList.getSelectedIndices();
                 List<Integer> list = new ArrayList<Integer>();
                 for (int i = 0; i < currentPlayList.getPlaylistSize(); i++) {
@@ -1402,22 +1240,18 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         //不循环
         JRadioButtonMenuItem noCircle = new JRadioButtonMenuItem(Config.getResource("playlist.mode.noCircle"));
         noCircle.setSelected(!config.isRepeatEnabled());
-        menu.add(noCircle).addActionListener(new  
+        menu.add(noCircle).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 config.setRepeatEnabled(false);
             }
         });
         //单曲循环
         JRadioButtonMenuItem singleCircle = new JRadioButtonMenuItem(Config.getResource("playlist.mode.singleCircle"));
         singleCircle.setSelected(config.isRepeatEnabled() && config.getRepeatStrategy() == Config.REPEAT_ONE);
-        menu.add(singleCircle).addActionListener(new  
+        menu.add(singleCircle).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 config.setRepeatEnabled(true);
                 config.setRepeatStrategy(Config.REPEAT_ONE);
             }
@@ -1425,11 +1259,9 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         //整体循环
         JRadioButtonMenuItem allCircle = new JRadioButtonMenuItem(Config.getResource("playlist.mode.allCircle"));
         allCircle.setSelected(config.isRepeatEnabled() && config.getRepeatStrategy() == Config.REPEAT_ALL);
-        menu.add(allCircle).addActionListener(new  
+        menu.add(allCircle).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae) {
                 config.setRepeatEnabled(true);
                 config.setRepeatStrategy(Config.REPEAT_ALL);
             }
@@ -1438,13 +1270,8 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         //顺序播放
         JRadioButtonMenuItem orderPlay = new JRadioButtonMenuItem(Config.getResource("playlist.mode.orderPlay"));
         orderPlay.setSelected(config.getPlayStrategy() == Config.ORDER_PLAY);
-        menu.add(orderPlay).addActionListener(new  
+        menu.add(orderPlay).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
-
-                
-            
-        
             public void actionPerformed(ActionEvent ae) {
                 config.setPlayStrategy(Config.ORDER_PLAY);
             }
@@ -1452,50 +1279,13 @@ public class PlayListUI extends JPanel implements ActionListener, MouseListener,
         //随机播放
         JRadioButtonMenuItem randomPlay = new JRadioButtonMenuItem(Config.getResource("playlist.mode.randomPlay"));
         randomPlay.setSelected(config.getPlayStrategy() == Config.RANDOM_PLAY);
-        menu.add(randomPlay).addActionListener(new  
+        menu.add(randomPlay).addActionListener(new ActionListener() {
 
-              ActionListener( ) {
+            public void actionPerformed(ActionEvent ae) {
 
-                
-            
-        
-        
-        
-        
-        
-        
-         
-    
 
-    public  void actionPerformed(ActionEvent ae) {
-    
-
-      config  
-    
-
-       
-
-          
-          
-
-             
-            .setPlayStrategy  
-              
-        
-
-          (
-                         
-             Config
-        
-
-           
-             
-        
-    
-
-           
-
-            .RANDOM_PLAY);
+                config.setPlayStrategy(
+                        Config.RANDOM_PLAY);
             }
         });
         bg1.add(noCircle);
