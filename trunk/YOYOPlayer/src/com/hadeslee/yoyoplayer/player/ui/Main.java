@@ -14,15 +14,15 @@ import com.sun.jna.examples.WindowUtils;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.MenuItem;
 import java.awt.Point;
-import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
@@ -39,7 +39,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -65,6 +67,7 @@ public class Main extends JFrame implements Loader {
     private JDialog lrcWin = null;
     private Config config = Config.getConfig();
 //    private RoundRectangle2D.Float rectPl,  rectLrc;
+
     public Main() {
         System.setProperty("sun.java2d.noddraw", "true");
         Logger main = Logger.getLogger("com");
@@ -385,31 +388,41 @@ public class Main extends JFrame implements Loader {
         mp.getLyricUI().getActionMap().put(id, action);
     }
 
+   /**
+    * 添加系统托盘支持
+    * <p>bugfix
+    * <p>2010-06-13 删除Awt 的PopupMenu，用轻量级的 JPopupMenu替代
+    * <p>解决了右键系统托盘会出现音乐暂停的问题，弹出菜单也比以前好看点
+    */
     public void addSystemTray() {
         if (SystemTray.isSupported()) {
             try {
-                final PopupMenu pm = new PopupMenu(Config.NAME);
-                MenuItem about = new MenuItem(Config.getResource("menuitem.about"));
-                MenuItem showMain = new MenuItem(Config.getResource("menuitem.showMain"));
-                MenuItem set = new MenuItem(Config.getResource("menuitem.set"));
-                MenuItem exit = new MenuItem(Config.getResource("menuitem.exit"));
+                final JPopupMenu pm = new JPopupMenu(Config.NAME);
+                JMenuItem about = new JMenuItem(Config.getResource("menuitem.about"),new ImageIcon(Util.getImage("system-help.png")));
+                JMenuItem showMain = new JMenuItem(Config.getResource("menuitem.showMain"),new ImageIcon(Util.getImage("show.png")));
+                JMenuItem set = new JMenuItem(Config.getResource("menuitem.set"),new ImageIcon(Util.getImage("preferences.png")));
+                JMenuItem exit = new JMenuItem(Config.getResource("menuitem.exit"),new ImageIcon(Util.getImage("exit.png")));
                 set.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent ae) {
+                       pm.setVisible(false);  //隐藏弹出菜单
                         JDialog jd = config.getOptionDialog();
                         jd.setVisible(true);
+
                     }
                 });
                 exit.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent ae) {
                         mp.closePlayer();
+
                     }
                 });
                 showMain.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent ae) {
                         Main.this.setVisible(true);
+                        pm.setVisible(false);  //隐藏弹出菜单
                         Main.this.setExtendedState(JFrame.NORMAL);
                         if (config.isShowEq()) {
                             eqWin.setVisible(true);
@@ -425,6 +438,7 @@ public class Main extends JFrame implements Loader {
                 about.addActionListener(new ActionListener() {
 
                     public void actionPerformed(ActionEvent ae) {
+                       pm.setVisible(false);  //隐藏弹出菜单
                         JOptionPane.showMessageDialog(null,
                                 new AboutPanel());
                     }
@@ -432,26 +446,50 @@ public class Main extends JFrame implements Loader {
                 pm.add(about);
                 pm.add(set);
                 pm.add(showMain);
+                pm.addSeparator();
                 pm.add(exit);
-                Image img = Util.getImage("player/icon.png");
-                final TrayIcon ti = new TrayIcon(img, Config.NAME, pm);
-                ti.setImageAutoSize(true);
-                ti.addActionListener(new ActionListener() {
 
-                    public void actionPerformed(ActionEvent ae) {
-                        Main.this.setVisible(true);
-                        Main.this.setExtendedState(JFrame.NORMAL);
-                        if (config.isShowEq()) {
-                            eqWin.setVisible(true);
-                        }
-                        if (config.isShowPlayList()) {
-                            plWin.setVisible(true);
-                        }
-                        if (config.isShowLrc()) {
-                            lrcWin.setVisible(true);
+                pm.setBorderPainted(true);
+                pm.setRequestFocusEnabled(true);
+
+
+                Image img = Util.getImage("player/icon.png");
+               
+                final TrayIcon ti = new TrayIcon(img, Config.NAME);
+                
+                ti.setImageAutoSize(true);
+               
+                ti.addMouseListener(new java.awt.event.MouseAdapter() {
+
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getClickCount() == 2) {
+                            Main.this.setVisible(true);
+                            Main.this.setExtendedState(JFrame.NORMAL);
+                            if (config.isShowEq()) {
+                                eqWin.setVisible(true);
+                            }
+                            if (config.isShowPlayList()) {
+                                plWin.setVisible(true);
+                            }
+                            if (config.isShowLrc()) {
+                                lrcWin.setVisible(true);
+                            }
                         }
                     }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                         if (e.getButton()==MouseEvent.BUTTON3) {
+                             //让弹出菜单显示的更加合理
+                            pm.show(e.getComponent(), e.getX(), e.getY()-90);
+                        }
+                    }
+
+
+                    
                 });
+
                 SystemTray.getSystemTray().add(ti);
             } catch (AWTException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
