@@ -65,7 +65,7 @@ public class Main extends JFrame implements Loader {
     private JDialog eqWin = null;
     private JDialog plWin = null;
     private JDialog lrcWin = null;
-    private Config config = Config.getConfig();
+    private static Config config = Config.getConfig();
 //    private RoundRectangle2D.Float rectPl,  rectLrc;
 
     public Main() {
@@ -606,6 +606,7 @@ public class Main extends JFrame implements Loader {
     public synchronized void setLocation(int x, int y) {
         Point now = new Point(x, y);
         super.setLocation(now.x, now.y);
+        Config config = Config.getConfig();
         if (plWin != null && (config.isSnapPlWindow() || !plWin.isShowing())) {
             Point dis = config.getDisPl();
             if (dis != null) {
