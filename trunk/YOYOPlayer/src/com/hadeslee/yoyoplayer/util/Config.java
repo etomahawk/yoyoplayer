@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -47,7 +46,7 @@ public class Config implements Serializable {
 
     private static final long serialVersionUID = 20071127L;
     private static final Logger log = Logger.getLogger(Config.class.getName());
-    public int voteOpenCount,voteOneHourCount;
+    public int voteOpenCount, voteOneHourCount;
     /*******************************************************************/
     /*************常量定义区*********************************************/
     /*******************************************************************/
@@ -141,7 +140,7 @@ public class Config implements Serializable {
     private boolean equalizerOn = true;//表示调音器是否生效.面板显不显示和这个没关系
     private boolean equalizerAuto;//表示调音器是否自动设置
     private boolean shadow = false;//是否要窗口渐入渐出
-    private boolean isSnapEqWindow = true,  isSnapLrcWindow = true,  isSnapPlWindow = true;//是否吸纳住了三个窗口
+    private boolean isSnapEqWindow = true, isSnapLrcWindow = true, isSnapPlWindow = true;//是否吸纳住了三个窗口
     private boolean isLinux;//是否是LINUX，它很多东西不支持
     private boolean useProxy;//是否使用代理服务器搜索歌词
     private boolean mute;//是否静音
@@ -151,26 +150,26 @@ public class Config implements Serializable {
     private String lastDir;//最后所使用的目录
 //    private String tagInfoPolicy = TAGINFO_POLICY_ALL;//标签的读取策略，是只读文件还是都读。
     private String encoding = "GBK";//读取和写入标签的编码
-    private String proxyHost,  proxyPort;//代理服务器的主机和端口号
-    private String proxyUserName,  proxyPwd;//代理服务器的用户名和密码
+    private String proxyHost, proxyPort;//代理服务器的主机和端口号
+    private String proxyUserName, proxyPwd;//代理服务器的用户名和密码
     private String currentPlayListName;//当前选中的播放列表的名字,下次打开也选中它
     private int repeatStrategy = REPEAT_ALL;//重复策略
     private int gainValue = VOLUMEMAX;//表示音量的大小保存量
     private int panValue = 0;//表示声道的保存量
     private int playStrategy = ORDER_PLAY;//表示播放策略,是顺序还是随机
-    private int xLocation = 300,  yLocation = 100;//主窗口在屏幕上面的XY座标
+    private int xLocation = 300, yLocation = 100;//主窗口在屏幕上面的XY座标
     private int bufferSize = 8;//缓冲大小
     private int readTagOrder = APEv2_ID3v2_ID3v1;//读取标签的顺序,默认是ape,v2,v1
     private int writeTagMode = WRITEMODE_ID3v1;//默认是使用ID3v1来写入
     private int showTimeStyle = SHOWTIME_POSITIVE;//显示时间的方式
     private int[] lastEqualizer;//最后调音器的配置,以便下次导入
-    private Point eqLocation,  lrcLocation,  plLocation;//三个窗口的位置
-    private Point disLrc,  disEq,  disPl;//三个面板和主面板的距离
+    private Point eqLocation, lrcLocation, plLocation;//三个窗口的位置
+    private Point disLrc, disEq, disPl;//三个面板和主面板的距离
 //    private File lyricDir = new File(System.getProperty("user.home"));//歌词的搜索目录,并不是写入的目录,写入还是固定在user.home里面
-    private Dimension lrcSize,  plSize;//歌词秀和播放列表的大小
+    private Dimension lrcSize, plSize;//歌词秀和播放列表的大小
     private Vector<PlayList> playlists;//所有的播放列表
     private Map<String, Set<String>> componentMap;//一个窗口关系的变量
-    private Date lastCheckUpdate=new Date();//最后一次检查更新的时候
+    private Date lastCheckUpdate = new Date();//最后一次检查更新的时候
     /*******************************************************************/
     /*****************不参与序列化的变量声明区****************************/
     /*****************这些变量在使用前必须检查是否为空********************/
@@ -270,6 +269,7 @@ public class Config implements Serializable {
     private int audioChartDisappearSpeed = DISAPPEAR_NORMAL;//消逝的速度
     private int audioChartBarCount = 20;//条柱个数
     private static Config config = new Config();//自己的一个单例的对象 
+
     static {
         load();
     }
@@ -1230,7 +1230,6 @@ public class Config implements Serializable {
 //    public void setTagInfoPolicy(String tag) {
 //        this.tagInfoPolicy = tag;
 //    }
-
     public int getXLocation() {
         return xLocation;
     }
@@ -1258,8 +1257,11 @@ public class Config implements Serializable {
                 HOME.mkdirs();
             }
             ois = new ObjectInputStream(new FileInputStream(new File(Config.HOME, NAME + ".dat")));
-            config = (Config) ois.readObject();
-            log.log(Level.INFO, Config.getResource("SongInfoDialog.loadConfigSuccess"));
+            Config temp = (Config) ois.readObject();
+            log.log(Level.INFO, Config.getResource("SongInfoDialog.loadConfigSuccess") + ",config=" + temp);
+            if (temp != null) {
+                config = temp;
+            }
             return true;
         } catch (Exception ex) {
             log.log(Level.SEVERE, Config.getResource("SongInfoDialog.loadConfigFailure"));
@@ -1269,7 +1271,6 @@ public class Config implements Serializable {
                 config.isLinux = System.getProperty("os.name").startsWith("Linux");
                 ois.close();
             } catch (Exception ex) {
-
             }
         }
     }
